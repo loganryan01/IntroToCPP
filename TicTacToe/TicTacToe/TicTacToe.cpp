@@ -2,22 +2,29 @@
 //
 
 #include <iostream>
+#include <Windows.h>
 
 using namespace std;
 
 int main()
 {
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    
     char player1Name[50];
     char player2Name[50];
     
     cout << "Welcome to Tic-Tac-Toe" << endl;
-
     cout << "Player 1, What is your name? ";
+    SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
     cin >> player1Name;
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
     cout << "Player 2, What is your name? ";
+    SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
     cin >> player2Name;
 
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
     cout << "So we have " << player1Name << " vs. " << player2Name << endl;
+    cout << "Let the game begin" << endl;
 
     return 0;
 }
