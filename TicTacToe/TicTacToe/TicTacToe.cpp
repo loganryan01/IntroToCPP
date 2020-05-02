@@ -6,6 +6,8 @@
 
 using namespace std;
 
+const char* INDENT = "\t";
+
 int main()
 {
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -15,29 +17,60 @@ int main()
     
     // Print title of game
     SetConsoleTextAttribute(h, 13 | FOREGROUND_INTENSITY);
-    cout << "\tWelcome to Tic-Tac-Toe" << endl;
+    cout << INDENT << INDENT << "Welcome to Tic-Tac-Toe" << endl;
 
     // Print game description
     SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
-    cout << "The player who succeeds in placing three of their marks in a horizontal, vertical, or diagonal row wins the game." << endl;
+    cout << INDENT << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
+    cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
     
-    // Get player names
+    // Set player 1 name
     SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << "Player 1, What is your name? ";
+    cout << INDENT << "Player 1, What is your name? " << INDENT;
     SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
     cin >> player1Name;
     cout << endl;
+
     SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << "Player 2, What is your name? ";
+    if (cin.fail())
+    {
+        cout << INDENT << "You cannot use that name." << endl;
+    }
+    else
+    {
+        cout << INDENT << "Welcome " << player1Name << ", You will be 'O'." << endl;
+    }
+    cin.clear();
+    cin.ignore(cin.rdbuf()->in_avail());
+    cin.get();
+
+    // Set player 2 name
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+    cout << INDENT << "Player 2, What is your name? " << INDENT;
     SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
     cin >> player2Name;
     cout << endl;
 
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+    if (cin.fail())
+    {
+        cout << INDENT << "You cannot use that name." << endl;
+    }
+    else
+    {
+        cout << INDENT << "Welcome " << player2Name << ", You will be 'X'." << endl;
+    }
+    cin.clear();
+    cin.ignore(cin.rdbuf()->in_avail());
+    cin.get();
+
     // Print player names
     SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << "So we have " << player1Name << " vs. " << player2Name << endl;
-    cout << "Let the game begin" << endl;
+    cout << INDENT << "So we have " << player1Name << " vs. " << player2Name << endl;
+    cout << INDENT << "Let the game begin" << endl;
+
+    cout << endl << INDENT << "Press 'Enter' to begin the game." << endl;
+    cin.get();
 
     return 0;
 }
