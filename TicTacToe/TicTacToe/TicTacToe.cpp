@@ -24,77 +24,152 @@ int main()
     const int GRID_WIDTH = 3;
     const int GRID_HEIGHT = 3;
 
+    const int LEFT = 4;
+    const int RIGHT = 6;
+    const int UP = 8;
+    const int DOWN = 2;
+
     char player1Name[50];
     char player2Name[50];
 
     int grid[GRID_HEIGHT][GRID_WIDTH];
 
-    // Print title of game
-    SetConsoleTextAttribute(h, 13 | FOREGROUND_INTENSITY);
-    cout << INDENT << INDENT << "Welcome to Tic-Tac-Toe" << endl;
-
-    // Print game description
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << INDENT << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
-    cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
-    
-    // Set player 1 name
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << INDENT << "Player 1, What is your name? " << INDENT;
-    SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
-    cin >> player1Name;
-    cout << endl;
-
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    if (cin.fail())
-    {
-        cout << INDENT << "You cannot use that name." << endl;
-    }
-    else
-    {
-        cout << INDENT << "Welcome " << player1Name << ", You will be 'O'." << endl;
-    }
-    cin.clear();
-    cin.ignore(cin.rdbuf()->in_avail());
-    cin.get();
-
-    // Set player 2 name
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << INDENT << "Player 2, What is your name? " << INDENT;
-    SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
-    cin >> player2Name;
-    cout << endl;
-
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    if (cin.fail())
-    {
-        cout << INDENT << "You cannot use that name." << endl;
-    }
-    else
-    {
-        cout << INDENT << "Welcome " << player2Name << ", You will be 'X'." << endl;
-    }
-    cin.clear();
-    cin.ignore(cin.rdbuf()->in_avail());
-    cin.get();
-
-    // Print player names
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << INDENT << "So we have " << player1Name << " vs. " << player2Name << endl;
-    cout << INDENT << "Let the game begin" << endl;
-
-    cout << endl << INDENT << "Press 'Enter' to begin the game." << endl;
-    cin.get();
-
-    // Draw grid
     for (int y = 0; y < GRID_HEIGHT; y++)
     {
-        cout << INDENT;
         for (int x = 0; x < GRID_WIDTH; x++)
         {
-            cout << EMPTY_TILE;
+            grid[y][x] = EMPTY;
         }
+    }
+
+    bool gameOver = false;
+    int playerX = 0;
+    int playerY = 0;
+
+    // game loop
+    while (!gameOver)
+    {
+        system("cls");
+        
+        // Print title of game
+        SetConsoleTextAttribute(h, 13 | FOREGROUND_INTENSITY);
+        cout << INDENT << INDENT << "Welcome to Tic-Tac-Toe" << endl;
+
+        // Print game description
+        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+        cout << INDENT << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
+        cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
+
+        // Draw grid
+        for (int y = 0; y < GRID_HEIGHT; y++)
+        {
+            cout << INDENT;
+            for (int x = 0; x < GRID_WIDTH; x++)
+            {
+                if (playerX == x && playerY == y)
+                {
+                    cout << PLAYER_TILE;
+                    continue;
+                }
+                
+                switch (grid[y][x])
+                {
+                case EMPTY:
+                    cout << EMPTY_TILE;
+                }
+            }
+            cout << endl;
+        }
+
+        // Set player 1 name
         cout << endl;
+        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+        cout << INDENT << "Player 1, What is your name? " << INDENT;
+        SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
+        cin >> player1Name;
+        cout << endl;
+
+        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+        if (cin.fail())
+        {
+            cout << INDENT << "You cannot use that name." << endl;
+        }
+        else
+        {
+            cout << INDENT << "Welcome " << player1Name << ", You will be 'O'." << endl;
+        }
+        cin.clear();
+        cin.ignore(cin.rdbuf()->in_avail());
+        cin.get();
+
+        // Set player 2 name
+        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+        cout << INDENT << "Player 2, What is your name? " << INDENT;
+        SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
+        cin >> player2Name;
+        cout << endl;
+
+        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+        if (cin.fail())
+        {
+            cout << INDENT << "You cannot use that name." << endl;
+        }
+        else
+        {
+            cout << INDENT << "Welcome " << player2Name << ", You will be 'X'." << endl;
+        }
+        cin.clear();
+        cin.ignore(cin.rdbuf()->in_avail());
+        cin.get();
+
+        // Print player names
+        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+        cout << INDENT << "So we have " << player1Name << " vs. " << player2Name << endl;
+        cout << INDENT << "Let the game begin" << endl;
+
+        cout << endl << INDENT << "Press 'Enter' to begin the game." << endl;
+        cin.get();
+
+        cout << INDENT << player1Name << " you go first." << endl;
+        cout << INDENT << "You can move " <<
+            ((playerX > 0) ? "left, " : "") <<
+            ((playerX < GRID_WIDTH - 1) ? "right, " : "") <<
+            ((playerY > 0) ? "up, " : "") <<
+            ((playerY < GRID_HEIGHT - 1) ? "down, " : "") << endl;
+
+        cout << INDENT << "Where to now?" << INDENT;
+
+        // clear the input buffer, ready for player input
+        cin.clear();
+        cin.ignore(cin.rdbuf()->in_avail());
+
+        int direction = 0;
+        cin >> direction;
+
+        if (cin.fail())
+            continue;
+
+        switch (direction)
+        {
+        case RIGHT:
+            if (playerX < GRID_WIDTH - 1)
+                playerX++;
+            break;
+        case LEFT:
+            if (playerX > 0)
+                playerX--;
+            break;
+        case UP:
+            if (playerY > 0)
+                playerY--;
+            break;
+        case DOWN:
+            if (playerY < GRID_HEIGHT - 1)
+                playerY++;
+        default:
+            // do nothing, go back to the top of the loop and ask again
+            break;
+        }
     }
 
     return 0;
