@@ -7,14 +7,28 @@
 using namespace std;
 
 const char* INDENT = "\t";
+const char* EMPTY_TILE = "[   ]";
+const char* KNOT_TILE = "[ O ]";
+const char* CROSS_TILE = "[ X ]";
+const char* PLAYER_TILE = "[ # ]";
 
 int main()
 {
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
     
+    const int EMPTY = 0;
+    const int KNOT = 1;
+    const int CROSS = 2;
+    const int PLAYER = 3;
+
+    const int GRID_WIDTH = 3;
+    const int GRID_HEIGHT = 3;
+
     char player1Name[50];
     char player2Name[50];
-    
+
+    int grid[GRID_HEIGHT][GRID_WIDTH];
+
     // Print title of game
     SetConsoleTextAttribute(h, 13 | FOREGROUND_INTENSITY);
     cout << INDENT << INDENT << "Welcome to Tic-Tac-Toe" << endl;
@@ -71,6 +85,17 @@ int main()
 
     cout << endl << INDENT << "Press 'Enter' to begin the game." << endl;
     cin.get();
+
+    // Draw grid
+    for (int y = 0; y < GRID_HEIGHT; y++)
+    {
+        cout << INDENT;
+        for (int x = 0; x < GRID_WIDTH; x++)
+        {
+            cout << EMPTY_TILE;
+        }
+        cout << endl;
+    }
 
     return 0;
 }
