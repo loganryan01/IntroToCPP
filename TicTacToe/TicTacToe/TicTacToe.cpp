@@ -12,23 +12,27 @@ const char* KNOT_TILE = "[ O ]";
 const char* CROSS_TILE = "[ X ]";
 const char* PLAYER_TILE = "[ # ]";
 
+const int EMPTY = 0;
+const int KNOT = 1;
+const int CROSS = 2;
+const int PLAYER = 3;
+
+const int GRID_WIDTH = 3;
+const int GRID_HEIGHT = 3;
+
+const int LEFT = 4;
+const int RIGHT = 6;
+const int UP = 8;
+const int DOWN = 2;
+
+void drawWelcomeMessage();
+void drawGrid(int grid[GRID_HEIGHT][GRID_WIDTH], int playerX, int playerY);
+void setPlayerNames(char player1Name[50], char player2Name[50]);
+void drawValidDirections(int x, int y);
+int getMovementDirection();
+
 int main()
 {
-    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-    
-    const int EMPTY = 0;
-    const int KNOT = 1;
-    const int CROSS = 2;
-    const int PLAYER = 3;
-
-    const int GRID_WIDTH = 3;
-    const int GRID_HEIGHT = 3;
-
-    const int LEFT = 4;
-    const int RIGHT = 6;
-    const int UP = 8;
-    const int DOWN = 2;
-
     char player1Name[50];
     char player2Name[50];
 
@@ -46,110 +50,25 @@ int main()
     int playerX = 0;
     int playerY = 0;
 
+    drawWelcomeMessage();
+
+    setPlayerNames(player1Name, player2Name);
+
     // game loop
     while (!gameOver)
     {
         system("cls");
-        
-        // Print title of game
-        SetConsoleTextAttribute(h, 13 | FOREGROUND_INTENSITY);
-        cout << INDENT << INDENT << "Welcome to Tic-Tac-Toe" << endl;
 
-        // Print game description
-        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-        cout << INDENT << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
-        cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
+        drawWelcomeMessage();
+        //output the grid
+        drawGrid(grid, playerX, playerY);
 
-        // Draw grid
-        for (int y = 0; y < GRID_HEIGHT; y++)
-        {
-            cout << INDENT;
-            for (int x = 0; x < GRID_WIDTH; x++)
-            {
-                if (playerX == x && playerY == y)
-                {
-                    cout << PLAYER_TILE;
-                    continue;
-                }
-                
-                switch (grid[y][x])
-                {
-                case EMPTY:
-                    cout << EMPTY_TILE;
-                }
-            }
-            cout << endl;
-        }
+        drawValidDirections(playerX, playerY);
+        cout << INDENT << player1Name << " Where to now?" << INDENT;
 
-        // Set player 1 name
-        cout << endl;
-        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-        cout << INDENT << "Player 1, What is your name? " << INDENT;
-        SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
-        cin >> player1Name;
-        cout << endl;
+        int player1direction = getMovementDirection();
 
-        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-        if (cin.fail())
-        {
-            cout << INDENT << "You cannot use that name." << endl;
-        }
-        else
-        {
-            cout << INDENT << "Welcome " << player1Name << ", You will be 'O'." << endl;
-        }
-        cin.clear();
-        cin.ignore(cin.rdbuf()->in_avail());
-        cin.get();
-
-        // Set player 2 name
-        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-        cout << INDENT << "Player 2, What is your name? " << INDENT;
-        SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
-        cin >> player2Name;
-        cout << endl;
-
-        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-        if (cin.fail())
-        {
-            cout << INDENT << "You cannot use that name." << endl;
-        }
-        else
-        {
-            cout << INDENT << "Welcome " << player2Name << ", You will be 'X'." << endl;
-        }
-        cin.clear();
-        cin.ignore(cin.rdbuf()->in_avail());
-        cin.get();
-
-        // Print player names
-        SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-        cout << INDENT << "So we have " << player1Name << " vs. " << player2Name << endl;
-        cout << INDENT << "Let the game begin" << endl;
-
-        cout << endl << INDENT << "Press 'Enter' to begin the game." << endl;
-        cin.get();
-
-        cout << INDENT << player1Name << " you go first." << endl;
-        cout << INDENT << "You can move " <<
-            ((playerX > 0) ? "left, " : "") <<
-            ((playerX < GRID_WIDTH - 1) ? "right, " : "") <<
-            ((playerY > 0) ? "up, " : "") <<
-            ((playerY < GRID_HEIGHT - 1) ? "down, " : "") << endl;
-
-        cout << INDENT << "Where to now?" << INDENT;
-
-        // clear the input buffer, ready for player input
-        cin.clear();
-        cin.ignore(cin.rdbuf()->in_avail());
-
-        int direction = 0;
-        cin >> direction;
-
-        if (cin.fail())
-            continue;
-
-        switch (direction)
+        switch (player1direction)
         {
         case RIGHT:
             if (playerX < GRID_WIDTH - 1)
@@ -173,6 +92,121 @@ int main()
     }
 
     return 0;
+}
+
+void drawWelcomeMessage()
+{
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    
+    // Print title of game
+    SetConsoleTextAttribute(h, 13 | FOREGROUND_INTENSITY);
+    cout << INDENT << INDENT << "Welcome to Tic-Tac-Toe" << endl;
+
+    // Print game description
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+    cout << INDENT << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
+    cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
+}
+
+void drawGrid(int grid[GRID_HEIGHT][GRID_WIDTH], int playerX, int playerY)
+{
+    // Draw grid
+    for (int y = 0; y < GRID_HEIGHT; y++)
+    {
+        cout << INDENT;
+        for (int x = 0; x < GRID_WIDTH; x++)
+        {
+            if (playerX == x && playerY == y)
+            {
+                cout << PLAYER_TILE;
+                continue;
+            }
+
+            switch (grid[y][x])
+            {
+            case EMPTY:
+                cout << EMPTY_TILE;
+            }
+        }
+        cout << endl;
+    }
+}
+
+void setPlayerNames(char player1Name[50], char player2Name[50])
+{
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    
+    // Set player 1 name
+    cout << endl;
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+    cout << INDENT << "Player 1, What is your name? " << INDENT;
+    SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
+    cin >> player1Name;
+    cout << endl;
+
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+    if (cin.fail())
+    {
+        cout << INDENT << "You cannot use that name." << endl;
+    }
+    else
+    {
+        cout << INDENT << "Welcome " << player1Name << ", You will be 'O'." << endl;
+    }
+    cin.clear();
+    cin.ignore(cin.rdbuf()->in_avail());
+    cin.get();
+
+    // Set player 2 name
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+    cout << INDENT << "Player 2, What is your name? " << INDENT;
+    SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
+    cin >> player2Name;
+    cout << endl;
+
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+    if (cin.fail())
+    {
+        cout << INDENT << "You cannot use that name." << endl;
+    }
+    else
+    {
+        cout << INDENT << "Welcome " << player2Name << ", You will be 'X'." << endl;
+    }
+    cin.clear();
+    cin.ignore(cin.rdbuf()->in_avail());
+    cin.get();
+
+    // Print player names
+    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
+    cout << INDENT << "So we have " << player1Name << " vs. " << player2Name << endl;
+    cout << INDENT << "Let the game begin" << endl;
+
+    cout << endl << INDENT << "Press 'Enter' to begin the game." << endl;
+    cin.get();
+}
+
+void drawValidDirections(int x, int y)
+{
+    cout << INDENT << "You can move " <<
+        ((x > 0) ? "left, " : "") <<
+        ((x < GRID_WIDTH - 1) ? "right, " : "") <<
+        ((y > 0) ? "up, " : "") <<
+        ((y < GRID_HEIGHT - 1) ? "down, " : "") << endl;
+}
+
+int getMovementDirection()
+{
+    // clear the input buffer, ready for player input
+    cin.clear();
+    cin.ignore(cin.rdbuf()->in_avail());
+
+    int direction = 0;
+    cin >> direction;
+
+    if (cin.fail())
+        return 0;
+    return direction;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
