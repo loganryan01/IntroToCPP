@@ -29,31 +29,22 @@ bool Game::isGameOver()
 
 void Game::drawWelcomeMessage()
 {
-	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	
 	// Print title of game
-	SetConsoleTextAttribute(h, 13 | FOREGROUND_INTENSITY);
-	cout << INDENT << INDENT << "Welcome to Tic-Tac-Toe" << endl;
+	cout << INDENT << INDENT << MAGENTA << "Welcome to Tic-Tac-Toe" << RESET_COLOR << endl;
 
 	// Print game description
-	SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
 	cout << INDENT << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
 	cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
 }
 
 void Game::setPlayerNames(char player1Name[50], char player2Name[50])
 {
-    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-
     // Set player 1 name
     cout << endl;
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << INDENT << "Player 1, What is your name? " << INDENT;
-    SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
+    cout << INDENT << "Player 1, What is your name? " << INDENT << YELLOW;
     cin >> player1Name;
-    cout << endl;
+    cout << RESET_COLOR << endl;
 
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
     if (cin.fail())
     {
         cout << INDENT << "You cannot use that name." << endl;
@@ -68,13 +59,10 @@ void Game::setPlayerNames(char player1Name[50], char player2Name[50])
     cin.get();
 
     // Set player 2 name
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
-    cout << INDENT << "Player 2, What is your name? " << INDENT;
-    SetConsoleTextAttribute(h, 14 | FOREGROUND_INTENSITY);
+    cout << INDENT << "Player 2, What is your name? " << INDENT << YELLOW;
     cin >> player2Name;
-    cout << endl;
+    cout << RESET_COLOR << endl;
 
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
     if (cin.fail())
     {
         cout << INDENT << "You cannot use that name." << endl;
@@ -89,7 +77,6 @@ void Game::setPlayerNames(char player1Name[50], char player2Name[50])
     cin.get();
 
     // Print player names
-    SetConsoleTextAttribute(h, 15 | FOREGROUND_INTENSITY);
     cout << INDENT << "So we have " << player1Name << " vs. " << player2Name << endl;
     cout << INDENT << "Let the game begin" << endl;
 
