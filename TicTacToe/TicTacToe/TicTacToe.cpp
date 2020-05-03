@@ -12,6 +12,12 @@ using namespace std;
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 
+struct Point2D
+{
+    int x;
+    int y;
+};
+
 const char* INDENT = "\t";
 const char* EMPTY_TILE = "[   ]";
 const char* KNOT_TILE = "[ O ]";
@@ -27,9 +33,9 @@ const int GRID_WIDTH = 3;
 const int GRID_HEIGHT = 3;
 
 void drawWelcomeMessage();
-void drawGrid(int grid[GRID_HEIGHT][GRID_WIDTH], int playerX, int playerY);
+void drawGrid(int grid[GRID_HEIGHT][GRID_WIDTH], Point2D position);
 void setPlayerNames(char player1Name[50], char player2Name[50]);
-void drawValidDirections(int x, int y);
+void drawValidDirections(Point2D position);
 
 int main()
 {
@@ -47,8 +53,8 @@ int main()
     }
 
     bool gameOver = false;
-    int playerX = 0;
-    int playerY = 0;
+
+    Point2D player = { 0, 0 };
 
     drawWelcomeMessage();
 
@@ -61,9 +67,9 @@ int main()
 
         drawWelcomeMessage();
         //output the grid
-        drawGrid(grid, playerX, playerY);
+        drawGrid(grid, player);
 
-        drawValidDirections(playerX, playerY);
+        drawValidDirections(player);
         cout << INDENT << player1Name << " Where to now?" << INDENT;
 
         int player1direction = getch();
@@ -71,20 +77,20 @@ int main()
         switch (player1direction)
         {
         case KEY_RIGHT:
-            if (playerX < GRID_WIDTH - 1)
-                playerX++;
+            if (player.x < GRID_WIDTH - 1)
+                player.x++;
             break;
         case KEY_LEFT:
-            if (playerX > 0)
-                playerX--;
+            if (player.x > 0)
+                player.x--;
             break;
         case KEY_UP:
-            if (playerY > 0)
-                playerY--;
+            if (player.y > 0)
+                player.y--;
             break;
         case KEY_DOWN:
-            if (playerY < GRID_HEIGHT - 1)
-                playerY++;
+            if (player.y < GRID_HEIGHT - 1)
+                player.y++;
         default:
             // do nothing, go back to the top of the loop and ask again
             break;
@@ -108,7 +114,7 @@ void drawWelcomeMessage()
     cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
 }
 
-void drawGrid(int grid[GRID_HEIGHT][GRID_WIDTH], int playerX, int playerY)
+void drawGrid(int grid[GRID_HEIGHT][GRID_WIDTH], Point2D position)
 {
     // Draw grid
     for (int y = 0; y < GRID_HEIGHT; y++)
@@ -116,7 +122,7 @@ void drawGrid(int grid[GRID_HEIGHT][GRID_WIDTH], int playerX, int playerY)
         cout << INDENT;
         for (int x = 0; x < GRID_WIDTH; x++)
         {
-            if (playerX == x && playerY == y)
+            if (position.x == x && position.y == y)
             {
                 cout << PLAYER_TILE;
                 continue;
@@ -186,13 +192,13 @@ void setPlayerNames(char player1Name[50], char player2Name[50])
     cin.get();
 }
 
-void drawValidDirections(int x, int y)
+void drawValidDirections(Point2D position)
 {
     cout << INDENT << "You can move " <<
-        ((x > 0) ? "left, " : "") <<
-        ((x < GRID_WIDTH - 1) ? "right, " : "") <<
-        ((y > 0) ? "up, " : "") <<
-        ((y < GRID_HEIGHT - 1) ? "down, " : "") << endl;
+        ((position.x > 0) ? "left, " : "") <<
+        ((position.x < GRID_WIDTH - 1) ? "right, " : "") <<
+        ((position.y > 0) ? "up, " : "") <<
+        ((position.y < GRID_HEIGHT - 1) ? "down, " : "") << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
