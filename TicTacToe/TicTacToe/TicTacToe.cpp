@@ -3,8 +3,14 @@
 
 #include <iostream>
 #include <Windows.h>
+#include <conio.h>
 
 using namespace std;
+
+#define KEY_UP 72
+#define KEY_DOWN 80
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
 
 const char* INDENT = "\t";
 const char* EMPTY_TILE = "[   ]";
@@ -20,16 +26,10 @@ const int PLAYER = 3;
 const int GRID_WIDTH = 3;
 const int GRID_HEIGHT = 3;
 
-const int LEFT = 4;
-const int RIGHT = 6;
-const int UP = 8;
-const int DOWN = 2;
-
 void drawWelcomeMessage();
 void drawGrid(int grid[GRID_HEIGHT][GRID_WIDTH], int playerX, int playerY);
 void setPlayerNames(char player1Name[50], char player2Name[50]);
 void drawValidDirections(int x, int y);
-int getMovementDirection();
 
 int main()
 {
@@ -66,23 +66,23 @@ int main()
         drawValidDirections(playerX, playerY);
         cout << INDENT << player1Name << " Where to now?" << INDENT;
 
-        int player1direction = getMovementDirection();
+        int player1direction = getch();
 
         switch (player1direction)
         {
-        case RIGHT:
+        case KEY_RIGHT:
             if (playerX < GRID_WIDTH - 1)
                 playerX++;
             break;
-        case LEFT:
+        case KEY_LEFT:
             if (playerX > 0)
                 playerX--;
             break;
-        case UP:
+        case KEY_UP:
             if (playerY > 0)
                 playerY--;
             break;
-        case DOWN:
+        case KEY_DOWN:
             if (playerY < GRID_HEIGHT - 1)
                 playerY++;
         default:
@@ -193,20 +193,6 @@ void drawValidDirections(int x, int y)
         ((x < GRID_WIDTH - 1) ? "right, " : "") <<
         ((y > 0) ? "up, " : "") <<
         ((y < GRID_HEIGHT - 1) ? "down, " : "") << endl;
-}
-
-int getMovementDirection()
-{
-    // clear the input buffer, ready for player input
-    cin.clear();
-    cin.ignore(cin.rdbuf()->in_avail());
-
-    int direction = 0;
-    cin >> direction;
-
-    if (cin.fail())
-        return 0;
-    return direction;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
