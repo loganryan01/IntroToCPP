@@ -33,9 +33,10 @@ void Squares::draw()
 	switch (m_type)
 	{
 	case EMPTY:
-		cout << EMPTY_TILE;
+		cout << "[  ]";
 		break;
 	case KNOT:
-		cout << KNOT_TILE;
+		cout << "[ O ]";
+		break;
 	}
 }

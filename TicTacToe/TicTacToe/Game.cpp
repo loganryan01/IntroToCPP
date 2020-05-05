@@ -15,7 +15,13 @@ Game::~Game()
 
 bool Game::startup()
 {
-	m_player.setPosition(Point2D{ 0,0 });
+    for (int y = 0; y < GRID_HEIGHT; y++)
+    {
+        for (int x = 0; x < GRID_WIDTH; x++)
+        {
+            m_grid[y][x].setType(0);
+        }
+    }
 
 	return true;
 }
@@ -84,61 +90,119 @@ void Game::setPlayerNames(char player1Name[50], char player2Name[50])
 
 void Game::drawGrid()
 {
-	Point2D position = m_player.getPosition();
+    Point2D position = { 0, 0 };
 
-    // Draw grid
     for (int y = 0; y < GRID_HEIGHT; y++)
     {
         cout << INDENT;
         for (int x = 0; x < GRID_WIDTH; x++)
         {
-            if (position.x == x && position.y == y)
-            {
-                cout << PLAYER_TILE;
-                continue;
-            }
-
-			m_grid[y][x].draw();
+            m_grid[y][x].draw();
         }
         cout << endl;
     }
-	cout << endl;
-}
-
-void Game::drawValidDirections()
-{
-    Point2D position = m_player.getPosition();
-    
-    cout << INDENT << "You can move " <<
-        ((position.x > 0) ? "left, " : "") <<
-        ((position.x < GRID_WIDTH - 1) ? "right, " : "") <<
-        ((position.y > 0) ? "up, " : "") <<
-        ((position.y < GRID_HEIGHT - 1) ? "down, " : "") << endl;
-}
-
-void Game::drawKnots()
-{
-    Point2D position = m_player.getPosition();
-    
-    if (m_grid[position.y][position.x].getType() == EMPTY)
-    {
-        m_grid[position.y][position.x].setType(KNOT);
-    }
-}
-
-void Game::drawCrosses()
-{
-
 }
 
 void Game::update()
 {
     Point2D playerPos = m_player.getPosition();
 
-    int command = getch();
+    int command;
+    cin >> command;
 
-    if (m_player.executeCommand(command))
-        return;
+    switch (command)
+    {
+    case 1:
+        if (m_grid[0][0].getType() == EMPTY)
+        {
+            m_grid[0][0].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    case 2:
+        if (m_grid[0][1].getType() == 0)
+        {
+            m_grid[0][1].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    case 3:
+        if (m_grid[0][2].getType() == 0)
+        {
+            m_grid[0][2].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    case 4:
+        if (m_grid[1][0].getType() == 0)
+        {
+            m_grid[1][0].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    case 5:
+        if (m_grid[1][1].getType() == 0)
+        {
+            m_grid[1][1].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    case 6:
+        if (m_grid[1][2].getType() == 0)
+        {
+            m_grid[1][2].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    case 7:
+        if (m_grid[2][0].getType() == 0)
+        {
+            m_grid[2][0].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    case 8:
+        if (m_grid[2][1].getType() == 0)
+        {
+            m_grid[2][1].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    case 9:
+        if (m_grid[2][2].getType() == 0)
+        {
+            m_grid[2][2].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+        }
+        break;
+    }
 }
 
 void Game::draw()
@@ -146,10 +210,5 @@ void Game::draw()
     Point2D playerPos = m_player.getPosition();
     system("cls");
     drawWelcomeMessage();
-    drawValidDirections();
     drawGrid();
-    if (cin.get())
-    {
-        drawKnots();
-    }
 }

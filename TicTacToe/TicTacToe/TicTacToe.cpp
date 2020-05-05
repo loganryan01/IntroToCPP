@@ -15,6 +15,8 @@ int main()
     char player1Name[50];
     char player2Name[50];
 
+    game.startup();
+
     game.drawWelcomeMessage();
 
     game.setPlayerNames(player1Name, player2Name);

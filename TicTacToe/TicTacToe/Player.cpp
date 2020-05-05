@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "GameDefines.h"
+#include "Squares.h"
 #include <iostream>
 
 using namespace std;
@@ -27,31 +28,36 @@ Point2D Player::getPosition()
 	return m_gridPosition;
 }
 
-void Player::draw()
+void Player::executeCommand(int command)
 {
-	cout << PLAYER_TILE;
-}
-
-bool Player::executeCommand(int command)
-{
-    switch (command)
+    /*switch (command)
     {
-    case KEY_RIGHT:
-        if (m_gridPosition.x < GRID_WIDTH - 1)
-            m_gridPosition.x++;
-        return true;
-    case KEY_LEFT:
-        if (m_gridPosition.x > 0)
-            m_gridPosition.x--;
-        return true;
-    case KEY_UP:
-        if (m_gridPosition.y > 0)
-            m_gridPosition.y--;
-        return true;
-    case KEY_DOWN:
-        if (m_gridPosition.y < GRID_HEIGHT - 1)
-            m_gridPosition.y++;
-        return true;
-    }
-    return false;
+    case 1:
+        if (m_grid[ROW][COLUMN].getType() == 0)
+        {
+            m_grid[ROW][COLUMN].setType(KNOT);
+        }
+        else
+        {
+            cout << "This square is already filled! Please choose another!";
+            drawKnots();
+        } 
+        break;
+    case 2:
+        ROW = 0; COLUMN = 1; break;
+    case 3:
+        ROW = 0; COLUMN = 2; break;
+    case 4:
+        ROW = 1; COLUMN = 0; break;
+    case 5:
+        ROW = 1; COLUMN = 1; break;
+    case 6:
+        ROW = 1; COLUMN = 2; break;
+    case 7:
+        ROW = 2; COLUMN = 0; break;
+    case 8:
+        ROW = 2; COLUMN = 1; break;
+    case 9:
+        ROW = 2; COLUMN = 2; break;
+    }*/
 }

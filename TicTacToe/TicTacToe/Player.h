@@ -1,10 +1,6 @@
 #pragma once
-#include "Point2D.h"
 
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
+#include "Point2D.h"
 
 class Player
 {
@@ -17,9 +13,7 @@ public:
 
 	Point2D getPosition();
 
-	void draw();
-
-	bool executeCommand(int command);
+	void executeCommand(int command);
 
 private:
 	Point2D m_gridPosition;
