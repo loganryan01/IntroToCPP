@@ -4,11 +4,8 @@
 
 using namespace std;
 
-Squares::Squares()
+Squares::Squares() : m_type(EMPTY), m_gridPosition(Point2D{ 0, 0 })
 {
-	m_type = EMPTY;
-	m_gridPosition.x = 0;
-	m_gridPosition.y = 0;
 }
 
 Squares::~Squares()

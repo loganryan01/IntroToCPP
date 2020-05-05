@@ -4,16 +4,12 @@
 
 using namespace std;
 
-Player::Player()
+Player::Player() : m_gridPosition(Point2D{ 0, 0 })
 {
-	m_gridPosition.x = 0;
-	m_gridPosition.y = 0;
 }
 
-Player::Player(int x, int y)
+Player::Player(int x, int y) : m_gridPosition(Point2D{ x, y })
 {
-	m_gridPosition.x = x;
-	m_gridPosition.y = y;
 }
 
 Player::~Player()

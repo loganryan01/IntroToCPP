@@ -5,14 +5,12 @@
 
 using namespace std;
 
-Game::Game() : player1Name{ }, player2Name{ }
+Game::Game() : player1Name{ }, player2Name{ }, m_gameOver{ false }
 {
-	m_gameOver = false;
 }
 
 Game::~Game()
 {
-
 }
 
 bool Game::startup()
