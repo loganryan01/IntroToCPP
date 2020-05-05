@@ -4,6 +4,10 @@
 #include "Squares.h"
 #include "Player.h"
 
+#define SPACE_BAR 32;
+
+class Squares;
+
 class Game
 {
 public:
@@ -21,6 +25,8 @@ public:
 private:
 	void drawGrid();
 	void drawValidDirections();
+	void drawKnots();
+	void drawCrosses();
 
 private:
 	bool m_gameOver;

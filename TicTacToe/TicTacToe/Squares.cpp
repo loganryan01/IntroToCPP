@@ -38,5 +38,7 @@ void Squares::draw()
 	case EMPTY:
 		cout << EMPTY_TILE;
 		break;
+	case KNOT:
+		cout << KNOT_TILE;
 	}
 }

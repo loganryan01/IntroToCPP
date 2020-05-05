@@ -118,6 +118,21 @@ void Game::drawValidDirections()
         ((position.y < GRID_HEIGHT - 1) ? "down, " : "") << endl;
 }
 
+void Game::drawKnots()
+{
+    Point2D position = m_player.getPosition();
+    
+    if (m_grid[position.y][position.x].getType() == EMPTY)
+    {
+        m_grid[position.y][position.x].setType(KNOT);
+    }
+}
+
+void Game::drawCrosses()
+{
+
+}
+
 void Game::update()
 {
     Point2D playerPos = m_player.getPosition();
@@ -135,4 +150,8 @@ void Game::draw()
     drawWelcomeMessage();
     drawValidDirections();
     drawGrid();
+    if (cin.get())
+    {
+        drawKnots();
+    }
 }
