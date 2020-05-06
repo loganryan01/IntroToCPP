@@ -13,8 +13,6 @@ public:
 
 	Point2D getPosition();
 
-	void executeCommand(int command);
-
 private:
 	Point2D m_gridPosition;
 };
