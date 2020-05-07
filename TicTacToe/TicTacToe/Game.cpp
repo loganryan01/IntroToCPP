@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Game::Game() : m_gameOver{ false }, m_player1Turn{ true }, m_player2Turn{ false }
+Game::Game() : m_gameOver{ false }, m_player1Turn{ true }, m_player2Turn{ false }, m_player1Wins{ false }, m_player2Wins{ false }
 {
 }
 
@@ -109,10 +109,15 @@ void Game::getCommand()
             if (m_player1Turn)
             {
                 m_grid[1][2].setType(KNOT);
+                m_player1Turn = false;
+                m_player2Turn = true;
             }
             else if (m_player2Turn)
             {
                 m_grid[1][2].setType(CROSS);
+                m_player1Turn = true;
+                m_player2Turn = false;
+
             };
             draw();
             cout << CSI << 10 << ";" << 0 << "H";
@@ -126,7 +131,21 @@ void Game::getCommand()
     case 13:
         if (m_grid[1][3].getType() == EMPTY)
         {
-            m_grid[1][3].setType(KNOT);
+            if (m_player1Turn)
+            {
+                m_grid[1][3].setType(KNOT);
+                m_player1Turn = false;
+                m_player2Turn = true;
+            }
+            else if (m_player2Turn)
+            {
+                m_grid[1][3].setType(CROSS);
+                m_player1Turn = true;
+                m_player2Turn = false;
+            };
+            draw();
+            cout << CSI << 10 << ";" << 0 << "H";
+            cout << INDENT << "Good choice!" << endl;
         }
         else
         {
@@ -136,7 +155,20 @@ void Game::getCommand()
     case 21:
         if (m_grid[2][1].getType() == EMPTY)
         {
-            m_grid[2][1].setType(KNOT);
+            if (m_player1Turn)
+            {
+                m_grid[2][1].setType(KNOT);
+                m_player1Turn = false;
+                m_player2Turn = true;
+            }
+            else if (m_player2Turn)
+            {
+                m_grid[2][1].setType(CROSS);
+                m_player1Turn = true;
+                m_player2Turn = false;
+            };
+            draw();
+            cout << CSI << 10 << ";" << 0 << "H";
             cout << INDENT << "Good choice!" << endl;
         }
         else
@@ -147,7 +179,20 @@ void Game::getCommand()
     case 22:
         if (m_grid[2][2].getType() == EMPTY)
         {
-            m_grid[2][2].setType(KNOT);
+            if (m_player1Turn)
+            {
+                m_grid[2][2].setType(KNOT);
+                m_player1Turn = false;
+                m_player2Turn = true;
+            }
+            else if (m_player2Turn)
+            {
+                m_grid[2][2].setType(CROSS);
+                m_player1Turn = true;
+                m_player2Turn = false;
+            };
+            draw();
+            cout << CSI << 10 << ";" << 0 << "H";
             cout << INDENT << "Good choice!" << endl;
         }
         else
@@ -158,7 +203,20 @@ void Game::getCommand()
     case 23:
         if (m_grid[2][3].getType() == EMPTY)
         {
-            m_grid[2][3].setType(KNOT);
+            if (m_player1Turn)
+            {
+                m_grid[2][3].setType(KNOT);
+                m_player1Turn = false;
+                m_player2Turn = true;
+            }
+            else if (m_player2Turn)
+            {
+                m_grid[2][3].setType(CROSS);
+                m_player1Turn = true;
+                m_player2Turn = false;
+            };
+            draw();
+            cout << CSI << 10 << ";" << 0 << "H";
             cout << INDENT << "Good choice!" << endl;
         }
         else
@@ -169,7 +227,20 @@ void Game::getCommand()
     case 31:
         if (m_grid[3][1].getType() == EMPTY)
         {
-            m_grid[3][1].setType(KNOT);
+            if (m_player1Turn)
+            {
+                m_grid[3][1].setType(KNOT);
+                m_player1Turn = false;
+                m_player2Turn = true;
+            }
+            else if (m_player2Turn)
+            {
+                m_grid[3][1].setType(CROSS);
+                m_player1Turn = true;
+                m_player2Turn = false;
+            };
+            draw();
+            cout << CSI << 10 << ";" << 0 << "H";
             cout << INDENT << "Good choice!" << endl;
         }
         else
@@ -180,7 +251,20 @@ void Game::getCommand()
     case 32:
         if (m_grid[3][2].getType() == EMPTY)
         {
-            m_grid[3][2].setType(KNOT);
+            if (m_player1Turn)
+            {
+                m_grid[3][2].setType(KNOT);
+                m_player1Turn = false;
+                m_player2Turn = true;
+            }
+            else if (m_player2Turn)
+            {
+                m_grid[3][2].setType(CROSS);
+                m_player1Turn = true;
+                m_player2Turn = false;
+            };
+            draw();
+            cout << CSI << 10 << ";" << 0 << "H";
             cout << INDENT << "Good choice!" << endl;
         }
         else
@@ -191,7 +275,20 @@ void Game::getCommand()
     case 33:
         if (m_grid[3][3].getType() == EMPTY)
         {
-            m_grid[3][3].setType(KNOT);
+            if (m_player1Turn)
+            {
+                m_grid[3][3].setType(KNOT);
+                m_player1Turn = false;
+                m_player2Turn = true;
+            }
+            else if (m_player2Turn)
+            {
+                m_grid[3][3].setType(CROSS);
+                m_player1Turn = true;
+                m_player2Turn = false;
+            };
+            draw();
+            cout << CSI << 10 << ";" << 0 << "H";
             cout << INDENT << "Good choice!" << endl;
         }
         else
@@ -201,9 +298,7 @@ void Game::getCommand()
         break;
     default:
         cout << "Invalid Command." << endl;
-        getCommand();
     }
-    
 
     cout << INDENT << "Press 'Enter' to continue.";
     cin.clear();
@@ -225,21 +320,67 @@ void Game::player2Turn()
     cout << CSI << 10 << ";" << 0 << "H";
     cout << INDENT << "It's 'X' turn" << endl;
     getCommand();
-    cout << CSI << 10 << ";" << 0 << "H";
+    cout << CSI << 9 << ";" << 0 << "H";
     cout << CSI << "0J";
+}
+
+void Game::player1Wins()
+{
+    if (m_grid[1][1].getType() == KNOT && m_grid[1][2].getType() == KNOT && m_grid[1][3].getType() == KNOT ||
+        m_grid[2][1].getType() == KNOT && m_grid[2][2].getType() == KNOT && m_grid[2][3].getType() == KNOT ||
+        m_grid[3][1].getType() == KNOT && m_grid[3][2].getType() == KNOT && m_grid[3][3].getType() == KNOT ||
+        m_grid[1][1].getType() == KNOT && m_grid[2][2].getType() == KNOT && m_grid[3][3].getType() == KNOT ||
+        m_grid[3][1].getType() == KNOT && m_grid[2][2].getType() == KNOT && m_grid[1][3].getType() == KNOT ||
+        m_grid[1][1].getType() == KNOT && m_grid[2][1].getType() == KNOT && m_grid[3][1].getType() == KNOT ||
+        m_grid[2][1].getType() == KNOT && m_grid[2][2].getType() == KNOT && m_grid[3][2].getType() == KNOT ||
+        m_grid[3][1].getType() == KNOT && m_grid[3][2].getType() == KNOT && m_grid[3][3].getType() == KNOT)
+    {
+        m_gameOver = true;
+        cout << CSI << 10 << ";" << 0 << "H";
+        cout << CSI << "0J";
+        cout << INDENT << "'O' Wins!" << endl;
+        cout << INDENT << "Press 'Enter' to exit the program.";
+        cin.clear();
+        cin.ignore(cin.rdbuf()->in_avail());
+        cin.get();
+    }
+}
+
+void Game::player2Wins()
+{
+    if (m_grid[1][1].getType() == CROSS && m_grid[1][2].getType() == CROSS && m_grid[1][3].getType() == CROSS ||
+        m_grid[2][1].getType() == CROSS && m_grid[2][2].getType() == CROSS && m_grid[2][3].getType() == CROSS ||
+        m_grid[3][1].getType() == CROSS && m_grid[3][2].getType() == CROSS && m_grid[3][3].getType() == CROSS ||
+        m_grid[1][1].getType() == CROSS && m_grid[2][2].getType() == CROSS && m_grid[3][3].getType() == CROSS ||
+        m_grid[3][1].getType() == CROSS && m_grid[2][2].getType() == CROSS && m_grid[1][3].getType() == CROSS ||
+        m_grid[1][1].getType() == CROSS && m_grid[2][1].getType() == CROSS && m_grid[3][1].getType() == CROSS ||
+        m_grid[2][1].getType() == CROSS && m_grid[2][2].getType() == CROSS && m_grid[3][2].getType() == CROSS ||
+        m_grid[3][1].getType() == CROSS && m_grid[3][2].getType() == CROSS && m_grid[3][3].getType() == CROSS)
+    {
+        m_gameOver = true;
+        cout << CSI << 10 << ";" << 0 << "H";
+        cout << CSI << "0J";
+        cout << INDENT << "'X' Wins!" << endl;
+        cout << INDENT << "Press 'Enter' to exit the program.";
+        cin.clear();
+        cin.ignore(cin.rdbuf()->in_avail());
+        cin.get();
+    }
 }
 
 void Game::update()
 {
     Point2D playerPos = m_player.getPosition();
 
-    if (m_player1Turn)
+    if (m_player1Turn && !m_gameOver)
     {
         player1Turn();
+        player1Wins();
     }
-    if (m_player2Turn)
+    if (m_player2Turn && !m_gameOver)
     {
         player2Turn();
+        player2Wins();
     }
 }
 
