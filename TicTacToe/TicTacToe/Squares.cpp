@@ -38,5 +38,7 @@ void Squares::draw()
 	case KNOT:
 		cout << "[ O ]";
 		break;
+	case CROSS:
+		cout << "[ X ]";
 	}
 }

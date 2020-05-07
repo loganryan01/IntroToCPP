@@ -13,10 +13,9 @@ const int EMPTY = 0;
 const int KNOT = 1;
 const int CROSS = 2;
 
-const int GRID_WIDTH = 3;
-const int GRID_HEIGHT = 3;
+const int GRID_WIDTH = 4;
+const int GRID_HEIGHT = 4;
 
 const int INDENT_X = 5;
-const int MAP_Y = 12;
 const int PLAYER_INPUT_X = 70;
-const int PLAYER_INPUT_Y = 9;
+const int PLAYER_INPUT_Y = 11;
