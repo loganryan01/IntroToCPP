@@ -2,7 +2,6 @@
 
 #include "GameDefines.h"
 #include "Squares.h"
-#include "Player.h"
 
 class Squares;
 
@@ -37,8 +36,9 @@ private:
 	bool m_gameOver;
 	bool m_player1Turn;
 	bool m_player2Turn;
+	bool m_player1Wins;
+	bool m_player2Wins;
 	
 	Squares m_grid[GRID_HEIGHT][GRID_WIDTH];
-	Player m_player;
 };
 

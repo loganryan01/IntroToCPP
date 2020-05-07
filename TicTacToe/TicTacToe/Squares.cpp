@@ -36,9 +36,9 @@ void Squares::draw()
 		cout << "[   ]";
 		break;
 	case KNOT:
-		cout << "[ O ]";
+		cout << "[ " << BLUE << "O" << RESET_COLOR << " ]";
 		break;
 	case CROSS:
-		cout << "[ X ]";
+		cout << "[ " << RED << "X" << RESET_COLOR << " ]";
 	}
 }

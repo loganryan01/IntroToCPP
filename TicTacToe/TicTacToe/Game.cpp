@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Game::Game() : m_gameOver{ false }, m_player1Turn{ true }, m_player2Turn{ false }
+Game::Game() : m_gameOver{ false }, m_player1Turn{ true }, m_player2Turn{ false }, m_player1Wins{ false }, m_player2Wins{ false }
 {
 }
 
@@ -76,7 +76,9 @@ void Game::getCommand()
     cin.clear();
     cin.ignore(cin.rdbuf()->in_avail());
 
+    cout << YELLOW;
     cin >> command;
+    cout << RESET_COLOR;
     switch (command)
     {
     case 11:
@@ -297,7 +299,7 @@ void Game::getCommand()
         }
         break;
     default:
-        cout << "Invalid Command." << endl;
+        cout << INDENT << "Invalid Command." << endl;
     }
 
     cout << INDENT << "Press 'Enter' to continue.";
@@ -336,6 +338,7 @@ void Game::player1Wins()
         m_grid[3][1].getType() == KNOT && m_grid[3][2].getType() == KNOT && m_grid[3][3].getType() == KNOT)
     {
         m_gameOver = true;
+        m_player1Wins = true;
         cout << CSI << 10 << ";" << 0 << "H";
         cout << CSI << "0J";
         cout << INDENT << "'O' Wins!" << endl;
@@ -358,6 +361,7 @@ void Game::player2Wins()
         m_grid[3][1].getType() == CROSS && m_grid[3][2].getType() == CROSS && m_grid[3][3].getType() == CROSS)
     {
         m_gameOver = true;
+        m_player2Wins = true;
         cout << CSI << 10 << ";" << 0 << "H";
         cout << CSI << "0J";
         cout << INDENT << "'X' Wins!" << endl;
@@ -387,25 +391,28 @@ void Game::playersTie()
 
 void Game::update()
 {
-    Point2D playerPos = m_player.getPosition();
-
     if (m_player1Turn && !m_gameOver)
     {
         player1Turn();
         player1Wins();
-        playersTie();
+        if (!m_player1Wins)
+        {
+            playersTie();
+        }
     }
     if (m_player2Turn && !m_gameOver)
     {
         player2Turn();
         player2Wins();
-        playersTie();
+        if (!m_player2Wins)
+        {
+            playersTie();
+        }
     }
 }
 
 void Game::draw()
 {
-    Point2D playerPos = m_player.getPosition();
     system("cls");
     drawWelcomeMessage();
     drawGrid();
