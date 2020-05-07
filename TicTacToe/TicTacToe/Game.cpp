@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Game::Game() : m_gameOver{ false }, m_player1Turn{ true }, m_player2Turn{ false }, m_player1Wins{ false }, m_player2Wins{ false }
+Game::Game() : m_gameOver{ false }, m_player1Turn{ true }, m_player2Turn{ false }
 {
 }
 
@@ -368,6 +368,23 @@ void Game::player2Wins()
     }
 }
 
+void Game::playersTie()
+{
+    if (m_grid[1][1].getType() != EMPTY && m_grid[1][2].getType() != EMPTY && m_grid[1][3].getType() != EMPTY &&
+        m_grid[2][1].getType() != EMPTY && m_grid[2][2].getType() != EMPTY && m_grid[2][3].getType() != EMPTY &&
+        m_grid[3][1].getType() != EMPTY && m_grid[3][2].getType() != EMPTY && m_grid[3][3].getType() != EMPTY)
+    {
+        m_gameOver = true;
+        cout << CSI << 10 << ";" << 0 << "H";
+        cout << CSI << "0J";
+        cout << INDENT << "It is a draw." << endl;
+        cout << INDENT << "Press 'Enter' to exit the program.";
+        cin.clear();
+        cin.ignore(cin.rdbuf()->in_avail());
+        cin.get();
+    }
+}
+
 void Game::update()
 {
     Point2D playerPos = m_player.getPosition();
@@ -376,11 +393,13 @@ void Game::update()
     {
         player1Turn();
         player1Wins();
+        playersTie();
     }
     if (m_player2Turn && !m_gameOver)
     {
         player2Turn();
         player2Wins();
+        playersTie();
     }
 }
 
