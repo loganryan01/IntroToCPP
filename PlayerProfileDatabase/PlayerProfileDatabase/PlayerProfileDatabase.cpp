@@ -5,14 +5,28 @@
 #include <fstream>
 #include <string>
 #include <conio.h>
+#include "File.h"
+
+void writeInFile(File fobj)
+{
+    char arr[] = "    ";
+    std::fstream file;
+    file.open("data.dat", std::ios::out | std::ios::binary);
+    file << fobj.retPlayerName(); file << arr;
+    file << fobj.retPlayerScore(); file << arr;
+    file.close();
+}
 
 int main()
 {
+    File fileobj;
+    
     while (1)
     {
         int choice;
         std::cout << "\n\n============ PLAYER PROFILE DATABASE ============";
         std::cout << "\n1: Exit from Program";
+        std::cout << "\n2: Add a new PLayer Record";
 
         std::cout << "\n\nEnter your choice...!\n";
         std::cin >> choice;
@@ -23,6 +37,10 @@ int main()
             case 1:
                 std::cout << "Exiting from program...\n";
                 exit(0); // closes the program 
+            case 2:
+                fileobj.input();
+                writeInFile(fileobj);
+                break;
             default:
                 std::cout << "Wrong Choice..! enter your choice again...\n";
                 break;

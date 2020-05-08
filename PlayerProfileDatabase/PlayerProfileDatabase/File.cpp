@@ -21,11 +21,21 @@ void File::input()
 }
 
 /*
-	* This function outputs the player details
+	* This function shows the last input information of player
 */
 void File::output()
 {
 	cout << "\nPlayer Details: \n";
 	cout << "player name==>" << playerName << endl;
 	cout << "player score==>" << playerScore << endl;
+}
+
+string File::retPlayerName()
+{
+	return playerName;
+}
+
+int File::retPlayerScore()
+{
+	return playerScore;
 }
