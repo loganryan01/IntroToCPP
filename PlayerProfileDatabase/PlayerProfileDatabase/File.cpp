@@ -19,3 +19,13 @@ void File::input()
 	cout << "\nEnter Player Highscore: ";
 	cin >> playerScore;
 }
+
+/*
+	* This function outputs the player details
+*/
+void File::output()
+{
+	cout << "\nPlayer Details: \n";
+	cout << "player name==>" << playerName << endl;
+	cout << "player score==>" << playerScore << endl;
+}
