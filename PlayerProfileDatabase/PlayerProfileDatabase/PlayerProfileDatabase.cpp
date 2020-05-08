@@ -17,6 +17,24 @@ void writeInFile(File fobj)
     file.close();
 }
 
+void showAllRecords()
+{
+    std::fstream file;
+    file.open("data.dat", std::ios_base::in | std::ios_base::binary);
+    char charsInLine[1024];
+    int count = 0;
+    std::cout << "Players records :\n\n";
+    if (file.is_open())
+    {
+        while (!file.eof() && file.peek() != EOF)
+        {
+            file.getline(charsInLine, 1024);
+            std::cout << charsInLine << std::endl;
+        }
+    }
+    file.close();
+}
+
 int main()
 {
     File fileobj;
@@ -26,7 +44,8 @@ int main()
         int choice;
         std::cout << "\n\n============ PLAYER PROFILE DATABASE ============";
         std::cout << "\n1: Exit from Program";
-        std::cout << "\n2: Add a new PLayer Record";
+        std::cout << "\n2: Add a new Player Record";
+        std::cout << "\n3: Show all Players Record";
 
         std::cout << "\n\nEnter your choice...!\n";
         std::cin >> choice;
@@ -40,6 +59,9 @@ int main()
             case 2:
                 fileobj.input();
                 writeInFile(fileobj);
+                break;
+            case 3:
+                showAllRecords();
                 break;
             default:
                 std::cout << "Wrong Choice..! enter your choice again...\n";
