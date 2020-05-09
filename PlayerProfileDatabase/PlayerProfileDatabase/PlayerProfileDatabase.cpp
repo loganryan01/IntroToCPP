@@ -7,38 +7,10 @@
 #include <conio.h>
 #include "File.h"
 
-void writeInFile(File fobj)
-{
-    char arr[] = "    ";
-    std::fstream file;
-    file.open("data.dat", std::ios::out | std::ios::binary);
-    file << fobj.retPlayerName(); file << arr;
-    file << fobj.retPlayerScore(); file << arr;
-    file.close();
-}
-
-void showAllRecords()
-{
-    std::fstream file;
-    file.open("data.dat", std::ios_base::in | std::ios_base::binary);
-    char charsInLine[1024];
-    int count = 0;
-    std::cout << "Players records :\n\n";
-    if (file.is_open())
-    {
-        while (!file.eof() && file.peek() != EOF)
-        {
-            file.getline(charsInLine, 1024);
-            std::cout << charsInLine << std::endl;
-        }
-    }
-    file.close();
-}
-
 int main()
 {
-    File fileobj;
-    
+    File player;
+
     while (1)
     {
         int choice;
@@ -57,11 +29,10 @@ int main()
                 std::cout << "Exiting from program...\n";
                 exit(0); // closes the program 
             case 2:
-                fileobj.input();
-                writeInFile(fileobj);
+                player.addPlayer();
                 break;
             case 3:
-                showAllRecords();
+                player.showAllPlayers();
                 break;
             default:
                 std::cout << "Wrong Choice..! enter your choice again...\n";

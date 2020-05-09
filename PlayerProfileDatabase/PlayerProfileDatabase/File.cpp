@@ -2,40 +2,43 @@
 
 using namespace std;
 
-/*
-	* This function takes input from user about Player Details
-	* The input taken by this function is stored in the File using writeFile() function
-*/
-void File::input()
+struct Player
 {
-	// Taking input of Player Name as First Name and Second Name
-	string strFname = "", strLname = "";
-	cout << "\nEnter the First Name of Player: ";
-	cin >> strFname;
-	cout << "\nEnter the Last Name of Player: ";
-	cin >> strLname;
-	playerName = strFname + " " + strLname; // Stores the player as Fname_Lname ex. Aastha_Anand
+	char first[25];
+	char last[25];
+	int score;
+};
 
-	cout << "\nEnter Player Highscore: ";
-	cin >> playerScore;
+void File::addPlayer()
+{
+	Player player;
+
+	cout << "Enter your first name: ";
+	cin >> player.first;
+	cout << "Enter your last name:";
+	cin >> player.last;
+	cout << "Enter your high-score: ";
+	cin >> player.score;
+
+	fstream file;
+	file.open("data.dat", ios::out | ios::binary | ios::app);
+	file.seekp(4, ios::beg);
+	file.write((char*)&player, sizeof(player));
+	file.close();
 }
 
-/*
-	* This function shows the last input information of player
-*/
-void File::output()
+void File::showAllPlayers()
 {
-	cout << "\nPlayer Details: \n";
-	cout << "player name==>" << playerName << endl;
-	cout << "player score==>" << playerScore << endl;
-}
-
-string File::retPlayerName()
-{
-	return playerName;
-}
-
-int File::retPlayerScore()
-{
-	return playerScore;
+	fstream file;
+	file.open("data.dat", ios_base::in | ios_base::binary);
+	if (file.is_open())
+	{
+		while (!file.eof() && file.peek() != EOF)
+		{
+			Player player;
+			file.read((char*)&player, sizeof(Player));
+			cout << player.first << " " << player.last << " " << player.score << endl;
+		}
+		file.close();
+	}
 }

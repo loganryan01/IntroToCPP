@@ -2,19 +2,16 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
 class File
 {
-	private:
-		string playerName;
-		int playerScore;
+private:
 
-	public:
-		void input();
-		void output();
-		string retPlayerName();
-		int retPlayerScore();
+public:
+	void addPlayer();
+	void showAllPlayers();
 };
 
