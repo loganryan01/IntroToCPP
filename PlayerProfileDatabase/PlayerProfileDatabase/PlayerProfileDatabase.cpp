@@ -2,46 +2,84 @@
 //
 
 #include <iostream>
+#include <windows.h>
+
+const char* ESC = "\x1b";
+const char* CSI = "\x1b[";
+
+const char* TITLE = "\x1b[5;20H";
+const char* INDENT = "\x1b[5C";
+const char* YELLOW = "\x1b[93m";
+const char* MAGENTA = "\x1b[95m";
+const char* RESET_COLOR = "\x1b[0m";
+const char* SAVE_CURSOR_POS = "\x1b[s";
+const char* RESTORE_CURSOR_POS = "\x1b[u";
 
 int main()
 {
+   // Set output mode to handle virtual terminal sequences
+    DWORD dwMode = 0;
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleMode(hOut, &dwMode);
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+
     int score = 0;
     char firstLetterOfName = 0;
     int position = 0;
 
-    std::cout << "Welcome to the player profile database!" << std::endl;
-    std::cout << "This database holds high-scores and who owns those high-scores." << std::endl;
-    std::cout << "It can be used for any game you wish." << std::endl << std::endl;
+    std::cout << TITLE << MAGENTA << "Welcome to the player profile database!" << RESET_COLOR << std::endl;
+    std::cout << INDENT << "This database holds high-scores and who owns those high-scores." << std::endl;
+    std::cout << INDENT << "It can be used for any game you wish." << std::endl << std::endl;
 
-    std::cout << "First, some questions..." << std::endl;
-    std::cout << "What is your high-score? " << std::endl;
+    std::cout << INDENT << "First, some questions..." << std::endl;
+
+    // save cursor position
+    std::cout << SAVE_CURSOR_POS;
+    std::cout << INDENT << "What is your high-score? " << INDENT << YELLOW;
 
     std::cin >> score;
+    std::cout << RESET_COLOR << std::endl;
     if (std::cin.fail())
     {
-        std::cout << "You have inputed an invalid score." << std::endl;
+        std::cout << INDENT << "You have inputed an invalid score." << std::endl;
     }
     else
     {
-        std::cout << "You entered " << score << std::endl;
+        std::cout << INDENT << "You entered " << score << std::endl;
     }
+
+    // clear input buffer
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
+    std::cin.get();
 
-    std::cout << "What is the first letter of your name? " << std::endl;
+    // move the cursor to the start of the 1st question
+    std::cout << RESTORE_CURSOR_POS;
+    // delete the next 4 lines of text
+    std::cout << CSI << "0J";
+
+    std::cout << INDENT << "What is the first letter of your name? " << INDENT << YELLOW;
 
     std::cin >> firstLetterOfName;
+    std::cout << RESET_COLOR << std::endl;
 
     if (std::cin.fail() || !isalpha(firstLetterOfName))
     {
-        std::cout << "You have inputed an invalid letter." << std::endl;
+        std::cout << INDENT << "You have inputed an invalid letter." << std::endl;
     }
     else
     {
-        std::cout << "You entered " << firstLetterOfName << std::endl;
+        std::cout << INDENT << "You entered " << firstLetterOfName << std::endl;
     }
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
+    std::cin.get();
+
+    // move the cursor to the start of the 1st question
+    std::cout << RESTORE_CURSOR_POS;
+    std::cout << CSI << "A";  // cursor up 1
+    std::cout << CSI << "0J"; // delete the next 4 lines of text
 
     if (firstLetterOfName != 0)
     {
@@ -52,10 +90,10 @@ int main()
         position = 0;
     }
 
-    std::cout << std::endl << "Using a complex deterministic algorithm, it has been calculated that you are "
+    std::cout << INDENT << "Using a complex deterministic algorithm, it has been calculated that you are "
         << position << " in the world." << std::endl;
 
-    std::cout << std::endl << "Press 'Enter' to exit the program." << std::endl;
+    std::cout << std::endl << INDENT << "Press 'Enter' to exit the program." << std::endl;
     std::cin.get();
     return 0;
 } 
