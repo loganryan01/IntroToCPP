@@ -2,44 +2,63 @@
 //
 
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <conio.h>
-#include "File.h"
 
 int main()
 {
-    File player;
+    int score = 0;
+    char firstLetterOfName = 0;
+    int position = 0;
 
-    while (1)
+    std::cout << "Welcome to the player profile database!" << std::endl;
+    std::cout << "This database holds high-scores and who owns those high-scores." << std::endl;
+    std::cout << "It can be used for any game you wish." << std::endl << std::endl;
+
+    std::cout << "First, some questions..." << std::endl;
+    std::cout << "What is your high-score? " << std::endl;
+
+    std::cin >> score;
+    if (std::cin.fail())
     {
-        int choice;
-        std::cout << "\n\n============ PLAYER PROFILE DATABASE ============";
-        std::cout << "\n1: Exit from Program";
-        std::cout << "\n2: Add a new Player Record";
-        std::cout << "\n3: Show all Players Record";
+        std::cout << "You have inputed an invalid score." << std::endl;
+    }
+    else
+    {
+        std::cout << "You entered " << score << std::endl;
+    }
+    std::cin.clear();
+    std::cin.ignore(std::cin.rdbuf()->in_avail());
 
-        std::cout << "\n\nEnter your choice...!\n";
-        std::cin >> choice;
-        system("cls"); // clearing the console
+    std::cout << "What is the first letter of your name? " << std::endl;
 
-        switch (choice)
-        {
-            case 1:
-                std::cout << "Exiting from program...\n";
-                exit(0); // closes the program 
-            case 2:
-                player.addPlayer();
-                break;
-            case 3:
-                player.showAllPlayers();
-                break;
-            default:
-                std::cout << "Wrong Choice..! enter your choice again...\n";
-                break;
-        } // end of switch
-    } // end of while
-} // end of main
+    std::cin >> firstLetterOfName;
+
+    if (std::cin.fail() || !isalpha(firstLetterOfName))
+    {
+        std::cout << "You have inputed an invalid letter." << std::endl;
+    }
+    else
+    {
+        std::cout << "You entered " << firstLetterOfName << std::endl;
+    }
+    std::cin.clear();
+    std::cin.ignore(std::cin.rdbuf()->in_avail());
+
+    if (firstLetterOfName != 0)
+    {
+        position = (float)score / (firstLetterOfName * 0.02f);
+    }
+    else
+    {
+        position = 0;
+    }
+
+    std::cout << std::endl << "Using a complex deterministic algorithm, it has been calculated that you are "
+        << position << " in the world." << std::endl;
+
+    std::cout << std::endl << "Press 'Enter' to exit the program." << std::endl;
+    std::cin.get();
+    return 0;
+} 
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
