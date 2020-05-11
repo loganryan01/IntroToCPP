@@ -17,16 +17,33 @@ const char* RESTORE_CURSOR_POS = "\x1b[u";
 
 int main()
 {
-   // Set output mode to handle virtual terminal sequences
+    const int EMPTY = 0;
+    
+    const int DISPLAY_WIDTH = 3;
+    const int DISPLAY_HEIGHT = 10;
+
+    // Set output mode to handle virtual terminal sequences
     DWORD dwMode = 0;
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     GetConsoleMode(hOut, &dwMode);
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(hOut, dwMode);
 
+    // create a 2D array
+    int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH];
+
     int score = 0;
     char firstLetterOfName = 0;
     int position = 0;
+
+    // fill the arrays with 0
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        for (int x = 0; x < DISPLAY_WIDTH; x++)
+        {
+            ladder[y][x] = EMPTY;
+        }
+    }
 
     std::cout << TITLE << MAGENTA << "Welcome to the player profile database!" << RESET_COLOR << std::endl;
     std::cout << INDENT << "This database holds high-scores and who owns those high-scores." << std::endl;
@@ -36,17 +53,35 @@ int main()
 
     // save cursor position
     std::cout << SAVE_CURSOR_POS;
+
+    // output the high-scores
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        std::cout << INDENT;
+        for (int x = 0; x < DISPLAY_WIDTH; x++)
+        {
+            std::cout << "[ " << ladder[y][x] << " ]";
+        }
+        std::cout << std::endl;
+    }
+
+    // move the cursor back to the top of the high-scores
+    std::cout << RESTORE_CURSOR_POS;
     std::cout << INDENT << "What is your high-score? " << INDENT << YELLOW;
 
     std::cin >> score;
     std::cout << RESET_COLOR << std::endl;
     if (std::cin.fail())
     {
-        std::cout << INDENT << "You have inputed an invalid score." << std::endl;
+        std::cout << INDENT << "You have inputed an invalid score.";
     }
     else
     {
-        std::cout << INDENT << "You entered " << score << std::endl;
+        std::cout << INDENT << "You entered " << score;
     }
 
     // clear input buffer
@@ -54,32 +89,35 @@ int main()
     std::cin.ignore(std::cin.rdbuf()->in_avail());
     std::cin.get();
 
+    // delete line
+    std::cout << CSI << "1A";
+    std::cout << CSI << "0K";
     // move the cursor to the start of the 1st question
     std::cout << RESTORE_CURSOR_POS;
-    // delete the next 4 lines of text
-    std::cout << CSI << "0J";
-
+    // delete the next 3 lines of text
+    std::cout << CSI << "0K";
     std::cout << INDENT << "What is the first letter of your name? " << INDENT << YELLOW;
 
+    std::cin.clear();
+    std::cin.ignore(std::cin.rdbuf()->in_avail());
     std::cin >> firstLetterOfName;
     std::cout << RESET_COLOR << std::endl;
 
     if (std::cin.fail() || !isalpha(firstLetterOfName))
     {
-        std::cout << INDENT << "You have inputed an invalid letter." << std::endl;
+        std::cout << INDENT << "You have inputed an invalid letter.";
     }
     else
     {
-        std::cout << INDENT << "You entered " << firstLetterOfName << std::endl;
+        std::cout << INDENT << "You entered " << firstLetterOfName;
     }
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
     std::cin.get();
 
-    // move the cursor to the start of the 1st question
-    std::cout << RESTORE_CURSOR_POS;
-    std::cout << CSI << "A";  // cursor up 1
-    std::cout << CSI << "0J"; // delete the next 4 lines of text
+    std::cout << CSI << "1A" << CSI << "0K";
+    // move the cursor to the start of the 1st question, then up 1, then delete and insert 4 lines
+    std::cout << RESTORE_CURSOR_POS << CSI << "A";
 
     if (firstLetterOfName != 0)
     {
@@ -93,7 +131,11 @@ int main()
     std::cout << INDENT << "Using a complex deterministic algorithm, it has been calculated that you are "
         << position << " in the world." << std::endl;
 
-    std::cout << std::endl << INDENT << "Press 'Enter' to exit the program." << std::endl;
+    std::cout << CSI << "0K";
+
+    std::cout << std::endl << INDENT << "Press 'Enter' to exit the program.";
+    std::cin.clear();
+    std::cin.ignore(std::cin.rdbuf()->in_avail());
     std::cin.get();
     return 0;
 } 
