@@ -18,12 +18,15 @@ const char* GREEN = "\x1b[92m";
 const char* RESET_COLOR = "\x1b[0m";
 
 const int EMPTY = 0;
+const int POSITION = 1;
+const int SCORE = 2;
+const int FIRSTLETTER = 3;
 
-const int DISPLAY_WIDTH = 3;
+const int DISPLAY_WIDTH = 4;
 const int DISPLAY_HEIGHT = 10;
 
 const int INDENT_X = 5;
-const int DISPLAY_Y = 13;
+const int DISPLAY_Y = 14;
 const int PLAYER_INPUT_X = 10;
 const int PLAYER_INPUT_Y = 9;
 
@@ -32,8 +35,8 @@ void initialize(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
 void drawWelcomeMessage();
 void drawRow(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y);
 void drawHighScores(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
-void getScore();
-void getFirstLetter();
+void getScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
+void getFirstLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
 
 int main()
 {
@@ -58,9 +61,9 @@ int main()
 
     while (!gameOver)
     {
-        getScore();
+        getScore(ladder);
 
-        getFirstLetter();
+        getFirstLetter(ladder);
     }
 
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
@@ -101,7 +104,22 @@ void initialize(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
     {
         for (int x = 0; x < DISPLAY_WIDTH; x++)
         {
-            ladder[y][x] = EMPTY;
+            if (x == 0)
+            {
+                ladder[y][0] = POSITION;
+            }
+            if (x == 1)
+            {
+                ladder[y][1] = EMPTY;
+            }
+            if (x == 2)
+            {
+                ladder[y][2] = EMPTY;
+            }
+            if (x == 3)
+            {
+                ladder[y][3] = EMPTY;
+            }
         }
     }
 }
@@ -116,7 +134,7 @@ void drawWelcomeMessage()
 void drawRow(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y)
 {
     // find the console output position
-    int outX = INDENT_X + (6 * x) + 1;
+    int outX = INDENT_X + (19 * x) + 1;
     int outY = DISPLAY_Y + y;
 
     std::cout << CSI << outY << ";" << outX << "H";
@@ -125,6 +143,10 @@ void drawRow(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y)
     {
     case EMPTY:
         std::cout << "[  ]";
+        break;
+    case POSITION:
+        std::cout << "[ " << y + 1 << " ]";
+        break;
     }
 }
 
@@ -132,6 +154,14 @@ void drawHighScores(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
 {
     // reset draw colors
     std::cout << RESET_COLOR;
+    std::cout << CSI << "13;6H";
+    std::cout << "Position" << std::endl;
+    std::cout << CSI << "13;25H";
+    std::cout << "High-Score" << std::endl;
+    std::cout << CSI << "13;44H";
+    std::cout << "First Name" << std::endl;
+    std::cout << CSI << "13;63H";
+    std::cout << "Last Name" << std::endl;
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
         std::cout << INDENT;
@@ -143,7 +173,22 @@ void drawHighScores(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
     }
 }
 
-void getScore()
+void setScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y, int score)
+{
+    // find the console output position
+    int outX = INDENT_X + 20;
+    int outY = DISPLAY_Y + y;
+
+    std::cout << CSI << outY << ";" << outX << "H";
+    // draw the room
+    switch (ladder[y][x])
+    {
+    case SCORE:
+        std::cout << "[ " << score << " ]";
+    }
+}
+
+void getScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
 {
     int score = 0;
     
@@ -161,19 +206,48 @@ void getScore()
         std::cout << INDENT << "You entered " << score;
     }
 
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        for (int x = 1; x < 2; x++)
+        {
+            if (ladder[y][1] == EMPTY)
+            {
+                ladder[y][1] = SCORE;
+                setScore(ladder, x, y, score);
+                break;
+            }
+            std::cout << std::endl;
+        }
+    }
+
     // clear input buffer
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
     std::cin.get();
-    std::cout << CSI << "1A" << CSI << "2K";
 }
 
-void getFirstLetter()
+void setFirstLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y, char firstLetterOfName)
+{
+    // find the console output position
+    int outX = INDENT_X + 39;
+    int outY = DISPLAY_Y + y;
+
+    std::cout << CSI << outY << ";" << outX << "H";
+    // draw the room
+    switch (ladder[y][x])
+    {
+    case FIRSTLETTER:
+        std::cout << "[ " << firstLetterOfName << " ]";
+    }
+}
+
+void getFirstLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
 {
     char firstLetterOfName = 0;
     
-    std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+    std::cout << CSI << PLAYER_INPUT_Y + 2 << ";" << 0 << "H";
     std::cout << CSI << "2K";
+    std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
     std::cout << INDENT << "What is the first letter of your name? " << INDENT << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
@@ -189,10 +263,24 @@ void getFirstLetter()
     {
         std::cout << INDENT << "You entered " << firstLetterOfName;
     }
+
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        for (int x = 2; x < 3; x++)
+        {
+            if (ladder[y][2] == EMPTY)
+            {
+                ladder[y][2] = FIRSTLETTER;
+                setFirstLetter(ladder, x, y, firstLetterOfName);
+                break;
+            }
+            std::cout << std::endl;
+        }
+    }
+
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
     std::cin.get();
-    std::cout << CSI << "1A" << CSI << "2K";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
