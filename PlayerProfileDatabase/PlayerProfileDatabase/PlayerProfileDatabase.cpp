@@ -36,9 +36,11 @@ void initialize(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
 void drawWelcomeMessage();
 void drawRow(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y);
 void drawHighScores(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
-void getScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
-void getFirstLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
-void getLastLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
+bool isRowEmpty(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int choice);
+void input(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
+void fillScoreSlot(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int choice);
+void fillFirstNameSlot(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int choice);
+void fillLastNameSlot(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int choice);
 
 int main()
 {
@@ -63,11 +65,7 @@ int main()
 
     while (!gameOver)
     {
-        getScore(ladder);
-
-        getFirstLetter(ladder);
-
-        getLastLetter(ladder);
+        input(ladder);
     }
 
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
@@ -138,7 +136,7 @@ void drawWelcomeMessage()
 void drawRow(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y)
 {
     // find the console output position
-    int outX = INDENT_X + (19 * x) + 1;
+    int outX = INDENT_X + (12 * x) + 1;
     int outY = DISPLAY_Y + y;
 
     std::cout << CSI << outY << ";" << outX << "H";
@@ -146,10 +144,15 @@ void drawRow(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y)
     switch (ladder[y][x])
     {
     case EMPTY:
-        std::cout << "[  ]";
+        std::cout << "          |";
         break;
     case POSITION:
-        std::cout << "[ " << y + 1 << " ]";
+        if (y == 9)
+        {
+            std::cout << "   " << y + 1 << ".   |";
+            break;
+        }
+        std::cout << "    " << y + 1 << ".   |";
         break;
     }
 }
@@ -159,13 +162,13 @@ void drawHighScores(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
     // reset draw colors
     std::cout << RESET_COLOR;
     std::cout << CSI << "13;6H";
-    std::cout << "Position" << std::endl;
-    std::cout << CSI << "13;25H";
-    std::cout << "High-Score" << std::endl;
-    std::cout << CSI << "13;44H";
-    std::cout << "First Name" << std::endl;
-    std::cout << CSI << "13;63H";
-    std::cout << "Last Name" << std::endl;
+    std::cout << "Position |" << std::endl;
+    std::cout << CSI << "13;17H";
+    std::cout << "High-Score |" << std::endl;
+    std::cout << CSI << "13;30H";
+    std::cout << "FirstName |" << std::endl;
+    std::cout << CSI << "13;42H";
+    std::cout << "Last Name |" << std::endl;
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
         std::cout << INDENT;
@@ -177,30 +180,67 @@ void drawHighScores(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
     }
 }
 
-void setScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y, int score)
+bool isRowEmpty(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int choice)
 {
-    // find the console output position
-    int outX = INDENT_X + 20;
-    int outY = DISPLAY_Y + y;
-
-    std::cout << CSI << outY << ";" << outX << "H";
-    // draw the room
-    switch (ladder[y][x])
+    if (ladder[choice - 1][1] == EMPTY && ladder[choice - 1][2] == EMPTY && ladder[choice - 1][3] == EMPTY)
     {
-    case SCORE:
-        std::cout << "[ " << score << " ]";
+        return true;
     }
+    return false;
 }
 
-void getScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
+void input(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
 {
-    int score = 0;
-    
+    int choice = 0;
+
     std::cout << CSI << PLAYER_INPUT_Y + 2 << ";" << 0 << "H";
     std::cout << CSI << "2K";
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
     std::cout << CSI << "2K";
-    std::cout << INDENT << "What is your high-score? " << INDENT << YELLOW;
+    std::cout << INDENT << "Choose a position: " << INDENT << YELLOW;
+    std::cin >> choice;
+    std::cout << RESET_COLOR;
+
+    if (isRowEmpty(ladder, choice))
+    {
+        fillScoreSlot(ladder, choice);
+        fillFirstNameSlot(ladder, choice);
+        fillLastNameSlot(ladder, choice);
+    }
+    else if (choice > DISPLAY_HEIGHT)
+    {
+        std::cout << INDENT << "Invalid choice." << std::endl;
+        std::cout << INDENT << "Press 'Enter' to continue" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::cin.rdbuf()->in_avail());
+        std::cin.get();
+        std::cout << CSI << PLAYER_INPUT_Y + 1 << ";" << 0 << "H";
+        std::cout << CSI << "2K";
+    }
+    else
+    {
+        std::cout << INDENT << "That row is full. Try picking another one." << std::endl;
+        std::cout << INDENT << "Press 'Enter' to continue" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::cin.rdbuf()->in_avail());
+        std::cin.get();
+        std::cout << CSI << PLAYER_INPUT_Y + 1 << ";" << 0 << "H";
+        std::cout << CSI << "2K";
+    }
+}
+
+void fillScoreSlot(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int choice)
+{
+    int score = 0;
+
+    std::cout << CSI << PLAYER_INPUT_Y + 2 << ";" << 0 << "H";
+    std::cout << CSI << "2K";
+    std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+    std::cout << CSI << "2K";
+    std::cout << INDENT << "Enter High-Score: " << INDENT << YELLOW;
+    std::cin.clear();
+    std::cin.ignore(std::cin.rdbuf()->in_avail());
+
     std::cin >> score;
     std::cout << RESET_COLOR << std::endl;
     if (std::cin.fail())
@@ -209,102 +249,62 @@ void getScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
     }
     else
     {
-        std::cout << INDENT << "You entered " << score;
-    }
+        ladder[choice - 1][1] = SCORE;
 
-    for (int y = 0; y < DISPLAY_HEIGHT; y++)
-    {
-        for (int x = 1; x < 2; x++)
+        // find the console output position
+        int outX = INDENT_X + (11 * 1) + 1;
+        int outY = DISPLAY_Y + (choice - 1);
+
+        std::cout << CSI << outY << ";" << outX << "H";
+
+        // draw the room
+        switch (ladder[choice - 1][1])
         {
-            if (ladder[y][1] == EMPTY)
-            {
-                ladder[y][1] = SCORE;
-                setScore(ladder, x, y, score);
-                break;
-            }
-            std::cout << std::endl;
+        case SCORE:
+            std::cout << score;
+            break;
         }
     }
-
-    // clear input buffer
-    std::cin.clear();
-    std::cin.ignore(std::cin.rdbuf()->in_avail());
-    std::cin.get();
 }
 
-void setFirstLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y, char firstLetterOfName)
-{
-    // find the console output position
-    int outX = INDENT_X + 39;
-    int outY = DISPLAY_Y + y;
-
-    std::cout << CSI << outY << ";" << outX << "H";
-    // draw the room
-    switch (ladder[y][x])
-    {
-    case FIRSTLETTER:
-        std::cout << "[ " << firstLetterOfName << " ]";
-    }
-}
-
-void getFirstLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
+void fillFirstNameSlot(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int choice)
 {
     char firstLetterOfName = 0;
-    
+
     std::cout << CSI << PLAYER_INPUT_Y + 2 << ";" << 0 << "H";
     std::cout << CSI << "2K";
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-    std::cout << INDENT << "What is the first letter of your name? " << INDENT << YELLOW;
+    std::cout << INDENT << "Enter first letter of your first name: " << INDENT << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
     std::cin >> firstLetterOfName;
     std::cout << RESET_COLOR << std::endl;
-
-    if (std::cin.fail() || !isalpha(firstLetterOfName))
+    if (std::cin.fail())
     {
         std::cout << INDENT << "You have inputed an invalid letter.";
     }
     else
     {
-        std::cout << INDENT << "You entered " << firstLetterOfName;
-    }
+        ladder[choice - 1][2] = FIRSTLETTER;
 
-    for (int y = 0; y < DISPLAY_HEIGHT; y++)
-    {
-        for (int x = 2; x < 3; x++)
+        // find the console output position
+        int outX = INDENT_X + (12 * 2) + 1;
+        int outY = DISPLAY_Y + (choice - 1);
+
+        std::cout << CSI << outY << ";" << outX << "H";
+
+        // draw the room
+        switch (ladder[choice - 1][2])
         {
-            if (ladder[y][2] == EMPTY)
-            {
-                ladder[y][2] = FIRSTLETTER;
-                setFirstLetter(ladder, x, y, firstLetterOfName);
-                break;
-            }
-            std::cout << std::endl;
+        case FIRSTLETTER:
+            std::cout << firstLetterOfName;
+            break;
         }
     }
-
-    std::cin.clear();
-    std::cin.ignore(std::cin.rdbuf()->in_avail());
-    std::cin.get();
 }
 
-void setLastLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y, char lastLetterOfName)
-{
-    // find the console output position
-    int outX = INDENT_X + 58;
-    int outY = DISPLAY_Y + y;
-
-    std::cout << CSI << outY << ";" << outX << "H";
-    // draw the room
-    switch (ladder[y][x])
-    {
-    case LASTLETTER:
-        std::cout << "[ " << lastLetterOfName << " ]";
-    }
-}
-
-void getLastLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
+void fillLastNameSlot(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int choice)
 {
     char lastLetterOfName = 0;
 
@@ -312,39 +312,34 @@ void getLastLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
     std::cout << CSI << "2K";
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
     std::cout << CSI << "2K";
-    std::cout << INDENT << "What is the last letter of your name? " << INDENT << YELLOW;
+    std::cout << INDENT << "Enter first letter of your last name: " << INDENT << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
     std::cin >> lastLetterOfName;
     std::cout << RESET_COLOR << std::endl;
-
     if (std::cin.fail() || !isalpha(lastLetterOfName))
     {
         std::cout << INDENT << "You have inputed an invalid letter.";
     }
     else
     {
-        std::cout << INDENT << "You entered " << lastLetterOfName;
-    }
+        ladder[choice - 1][3] = LASTLETTER;
 
-    for (int y = 0; y < DISPLAY_HEIGHT; y++)
-    {
-        for (int x = 3; x < 4; x++)
+        // find the console output position
+        int outX = INDENT_X + (12 * 3) + 1;
+        int outY = DISPLAY_Y + (choice - 1);
+
+        std::cout << CSI << outY << ";" << outX << "H";
+
+        // draw the room
+        switch (ladder[choice - 1][3])
         {
-            if (ladder[y][3] == EMPTY)
-            {
-                ladder[y][3] = LASTLETTER;
-                setLastLetter(ladder, x, y, lastLetterOfName);
-                break;
-            }
-            std::cout << std::endl;
+        case LASTLETTER:
+            std::cout << lastLetterOfName;
+            break;
         }
     }
-
-    std::cin.clear();
-    std::cin.ignore(std::cin.rdbuf()->in_avail());
-    std::cin.get();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
