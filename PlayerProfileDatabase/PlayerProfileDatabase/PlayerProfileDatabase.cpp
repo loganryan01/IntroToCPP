@@ -21,6 +21,7 @@ const int EMPTY = 0;
 const int POSITION = 1;
 const int SCORE = 2;
 const int FIRSTLETTER = 3;
+const int LASTLETTER = 4;
 
 const int DISPLAY_WIDTH = 4;
 const int DISPLAY_HEIGHT = 10;
@@ -37,6 +38,7 @@ void drawRow(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y);
 void drawHighScores(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
 void getScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
 void getFirstLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
+void getLastLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH]);
 
 int main()
 {
@@ -64,6 +66,8 @@ int main()
         getScore(ladder);
 
         getFirstLetter(ladder);
+
+        getLastLetter(ladder);
     }
 
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
@@ -192,6 +196,8 @@ void getScore(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
 {
     int score = 0;
     
+    std::cout << CSI << PLAYER_INPUT_Y + 2 << ";" << 0 << "H";
+    std::cout << CSI << "2K";
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
     std::cout << CSI << "2K";
     std::cout << INDENT << "What is your high-score? " << INDENT << YELLOW;
@@ -272,6 +278,64 @@ void getFirstLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
             {
                 ladder[y][2] = FIRSTLETTER;
                 setFirstLetter(ladder, x, y, firstLetterOfName);
+                break;
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    std::cin.clear();
+    std::cin.ignore(std::cin.rdbuf()->in_avail());
+    std::cin.get();
+}
+
+void setLastLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH], int x, int y, char lastLetterOfName)
+{
+    // find the console output position
+    int outX = INDENT_X + 58;
+    int outY = DISPLAY_Y + y;
+
+    std::cout << CSI << outY << ";" << outX << "H";
+    // draw the room
+    switch (ladder[y][x])
+    {
+    case LASTLETTER:
+        std::cout << "[ " << lastLetterOfName << " ]";
+    }
+}
+
+void getLastLetter(int ladder[DISPLAY_HEIGHT][DISPLAY_WIDTH])
+{
+    char lastLetterOfName = 0;
+
+    std::cout << CSI << PLAYER_INPUT_Y + 2 << ";" << 0 << "H";
+    std::cout << CSI << "2K";
+    std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+    std::cout << CSI << "2K";
+    std::cout << INDENT << "What is the last letter of your name? " << INDENT << YELLOW;
+    std::cin.clear();
+    std::cin.ignore(std::cin.rdbuf()->in_avail());
+
+    std::cin >> lastLetterOfName;
+    std::cout << RESET_COLOR << std::endl;
+
+    if (std::cin.fail() || !isalpha(lastLetterOfName))
+    {
+        std::cout << INDENT << "You have inputed an invalid letter.";
+    }
+    else
+    {
+        std::cout << INDENT << "You entered " << lastLetterOfName;
+    }
+
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        for (int x = 3; x < 4; x++)
+        {
+            if (ladder[y][3] == EMPTY)
+            {
+                ladder[y][3] = LASTLETTER;
+                setLastLetter(ladder, x, y, lastLetterOfName);
                 break;
             }
             std::cout << std::endl;
