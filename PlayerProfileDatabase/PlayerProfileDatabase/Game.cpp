@@ -3,10 +3,8 @@
 #include <windows.h>
 #include <cctype>
 
-Game::Game()
+Game::Game() : m_gameOver{ false }, m_score{ 0 }
 {
-    m_gameOver = false;
-    m_score = 0;
     strncpy_s(m_initials, "\0", 4);
 }
 
@@ -19,32 +17,30 @@ void Game::update()
 {
     int choice = getChoice();
 
-    if (choice > 10)
+    switch (choice)
     {
-        std::cout << INDENT << "Invalid row. Choose another row." << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::cin.rdbuf()->in_avail());
-        std::cin.get();
-    }
-    else if (m_table[choice - 1][1].getType() == EMPTY && m_table[choice - 1][2].getType() == EMPTY)
-    {
-        updateScore(choice);
-
-        if (m_table[choice - 1][1].getType() != EMPTY)
+    case 1: // Add player info to table
+        updateInitials();
+        updateScore();
+        break;
+    case 2: // Change player initials
+        char input[4];
+        std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+        std::cout << CSI << "40X";
+        std::cout << INDENT << "Input old initials: " << YELLOW;
+        std::cin >> input;
+        std::cout << RESET_COLOR;
+        if (correctInitials(input))
         {
-            updateInitials(choice);
-            if (m_table[choice - 1][2].getType() == EMPTY)
-            {
-                m_table[choice - 1][1].setType(EMPTY);
-            }
+            updateInitials();
         }
-    }
-    else
-    {
-        std::cout << INDENT << "Invalid action. Try Again." << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::cin.rdbuf()->in_avail());
-        std::cin.get();
+        break;
+    case 3: // Change player score
+        updateScore();
+        break;
+    case 4: // Exit form database
+        exit(0);
+        break;
     }
 }
 
@@ -107,19 +103,11 @@ void Game::initializeTable()
         {
             if (x == 0)
             {
-                m_table[y][0].setType(POSITION);
+                m_table[y][0].setType(EMPTY);
             }
             if (x == 1)
             {
                 m_table[y][1].setType(EMPTY);
-            }
-            if (x == 2)
-            {
-                m_table[y][2].setType(EMPTY);
-            }
-            if (x == 3)
-            {
-                m_table[y][3].setType(EMPTY);
             }
             m_table[y][x].setPosition(Point2D{ x, y });
         }
@@ -139,26 +127,26 @@ void Game::drawTable()
 
     // reset draw colors
     std::cout << RESET_COLOR;
-    std::cout << CSI << "9;6H";
-    std::cout << "Position |" << std::endl;
-    std::cout << CSI << "9;17H";
+    std::cout << CSI << "9;70H";
+    std::cout << "| Name |" << std::endl;
+    std::cout << CSI << "9;79H";
     std::cout << "High-Score |" << std::endl;
-    std::cout << CSI << "9;30H";
-    std::cout << "Initials  |" << std::endl;
     for (position.y = 0; position.y < DISPLAY_HEIGHT; position.y++)
     {
         for (position.x = 0; position.x < DISPLAY_WIDTH; position.x++)
         {
-            m_table[position.y][position.x].drawSlots();
+            m_table[position.y][position.x].drawSlots(position.y);
         }
         std::cout << std::endl;
     }
 }
 
-void Game::updateScore(int choice)
+void Game::updateScore()
 {
+    int position = 0;
+    
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-    std::cout << CSI << "0K";
+    std::cout << CSI << "40X";
     std::cout << INDENT << "Enter High-Score: " << INDENT << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
@@ -176,16 +164,19 @@ void Game::updateScore(int choice)
     }
     else
     {
-        m_table[choice - 1][1].setType(SCORE);
-        m_table[choice - 1][1].setScore(m_score);
+        m_table[position][1].setType(SCORE);
+        m_table[position][1].setScore(m_score, position);
+        position++;
     }
 }
 
-void Game::updateInitials(int choice)
+void Game::updateInitials()
 {
+    int position = 0;
+
     std::cout << RESET_COLOR;
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-    std::cout << CSI << "0K";
+    std::cout << CSI << "40X";
     std::cout << INDENT << "Enter initials of your name: " << INDENT << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
@@ -202,8 +193,9 @@ void Game::updateInitials(int choice)
     }
     else
     {
-        m_table[choice - 1][2].setType(INITIALS);
-        m_table[choice - 1][2].setInitials(m_initials);
+        m_table[position][0].setType(INITIALS);
+        m_table[position][0].setInitials(m_initials, position);
+        position++;
     }
 }
 
@@ -212,18 +204,26 @@ int Game::getChoice()
     int input = 0;
     
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-    std::cout << CSI << "0J";
-    std::cout << INDENT << "Enter row number:";
+    std::cout << CSI << "40X";
+    std::cout << INDENT << "What do you want to do?";
     std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H" << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
     std::cin >> input;
     std::cout << RESET_COLOR;
-    if (!std::cin.good())
-    {
-        return 11;
-    }
 
     return input;
+}
+
+bool Game::correctInitials(char input[4])
+{
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        if (m_table[y][0].initialsMatch(y, input)  == EMPTY)
+        {
+            return true;
+        }
+    }
+    return false;
 }

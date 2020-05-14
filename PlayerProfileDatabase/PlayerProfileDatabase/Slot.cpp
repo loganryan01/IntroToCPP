@@ -2,16 +2,13 @@
 #include "GameDefines.h"
 #include <iostream>
 
-Slot::Slot()
+Slot::Slot() : m_type{ EMPTY }, m_arraySize{ 0 }, m_tablePosition{ 0, 0 }, m_player{ new Player[m_arraySize] }
 {
-	m_type = EMPTY;
-    m_tablePosition = { 0, 0 };
-    m_player = { 0, "\0" };
 }
 
 Slot::~Slot()
 {
-
+    delete[] m_player;
 }
 
 void Slot::setPosition(Point2D position)
@@ -24,14 +21,16 @@ void Slot::setType(int type)
 	m_type = type;
 }
 
-void Slot::setScore(int score)
+void Slot::setScore(int score, int position)
 {
-    m_player.score = score;
+    m_arraySize = position;
+    m_player[m_arraySize].score = score;
 }
 
-void Slot::setInitials(char initials[4])
+void Slot::setInitials(char initials[4], int position)
 {
-    strncpy_s(m_player.initials, initials, 4);
+    m_arraySize = position;
+    strncpy_s(m_player[m_arraySize].initials, initials, 4);
 }
 
 int Slot::getType()
@@ -39,32 +38,41 @@ int Slot::getType()
 	return m_type;
 }
 
-void Slot::drawSlots()
+bool Slot::initialsMatch(int y, char initials[4])
+{
+    int correct = 0;
+    
+    for (int i = 0; i < 4; i++)
+    {
+        if (initials[i] == m_player[y].initials[i])
+            correct++;
+    }
+
+    if (correct == 4)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void Slot::drawSlots(int y)
 {
     // find the console output position
-    int outX = INDENT_X + (12 * m_tablePosition.x) + 1;
+    int outX = INDENT_X + (7 * m_tablePosition.x) + 65;
     int outY = DISPLAY_Y + m_tablePosition.y;
 
     std::cout << CSI << outY << ";" << outX << "H";
     // draw the room
     switch (m_type)
     {
-    case EMPTY:
-        std::cout << "          |";
-        break;
-    case POSITION:
-        if (m_tablePosition.y == 9)
-        {
-            std::cout << "   " << m_tablePosition.y + 1 << ".   |";
-            break;
-        }
-        std::cout << "    " << m_tablePosition.y + 1 << ".   |";
-        break;
     case SCORE:
-        std::cout << m_player.score;
+        std::cout << "| " << m_player[y].score;
         break;
     case INITIALS:
-        std::cout << m_player.initials;
+        std::cout << "| " << m_player[y].initials;
         break;
     }
 }

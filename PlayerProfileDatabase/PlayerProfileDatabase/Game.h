@@ -23,10 +23,12 @@ private:
 	void drawWelcomeMessage();
 	void drawTable();
 
-	void updateScore(int choice);
-	void updateInitials(int choice);
+	void updateScore();
+	void updateInitials();
 
 	int getChoice();
+
+	bool correctInitials(char input[4]);
 
 private:
 	bool m_gameOver;

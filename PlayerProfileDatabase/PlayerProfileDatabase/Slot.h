@@ -9,16 +9,18 @@ public:
 
 	void setPosition(Point2D position);
 	void setType(int type);
-	void setScore(int score);
-	void setInitials(char initials[4]);
+	void setScore(int score, int choice);
+	void setInitials(char initials[4], int choice);
 
 	int getType();
+	bool initialsMatch(int y, char initials[4]);
 
-	void drawSlots();
+	void drawSlots(int y);
 
 private:
 	Point2D m_tablePosition;
 	int m_type;
-	Player m_player;
+	int m_arraySize;
+	Player* m_player;
 };
 

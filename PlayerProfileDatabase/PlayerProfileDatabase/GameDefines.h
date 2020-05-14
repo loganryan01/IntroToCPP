@@ -18,10 +18,10 @@ const int POSITION = 1;
 const int SCORE = 2;
 const int INITIALS = 3;
 
-const int DISPLAY_WIDTH = 3;
+const int DISPLAY_WIDTH = 2;
 const int DISPLAY_HEIGHT = 10;
 
 const int INDENT_X = 5;
 const int DISPLAY_Y = 10;
 const int PLAYER_INPUT_X = 35;
-const int PLAYER_INPUT_Y = 21;
+const int PLAYER_INPUT_Y = 9;
