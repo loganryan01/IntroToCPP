@@ -5,6 +5,7 @@
 
 Game::Game() : m_gameOver{ false }, m_score{ 0 }
 {
+    m_playerArray = 0;
     strncpy_s(m_initials, "\0", 4);
 }
 
@@ -15,16 +16,35 @@ Game::~Game()
 
 void Game::update()
 {
+    
+    char input[4];
+
+    drawCommandList();
+
     int choice = getChoice();
+
+    hideCommandList();
 
     switch (choice)
     {
     case 1: // Add player info to table
-        updateInitials();
-        updateScore();
+        if (availableSpot())
+        {
+            updateInitials();
+            updateScore();
+            sort();
+        }
+        else
+        {
+            std::cout << INDENT << "There is no room available on the table at the moment." << std::endl;
+            std::cout << std::endl << INDENT << "Press 'Enter' to continue.";
+            std::cin.clear();
+            std::cin.ignore(std::cin.rdbuf()->in_avail());
+            std::cin.get();
+        }
+        
         break;
     case 2: // Change player initials
-        char input[4];
         std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
         std::cout << CSI << "40X";
         std::cout << INDENT << "Input old initials: " << YELLOW;
@@ -36,9 +56,24 @@ void Game::update()
         }
         break;
     case 3: // Change player score
-        updateScore();
+        std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+        std::cout << CSI << "40X";
+        std::cout << INDENT << "Whose score do you want to change?" << std::endl;
+        std::cout << INDENT << "Input old initials: " << YELLOW;
+        std::cin >> input;
+        std::cout << RESET_COLOR;
+        if (correctInitials(input))
+        {
+            updateScore();
+        }
         break;
     case 4: // Exit form database
+        std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+        std::cout << std::endl << INDENT << "Press 'Enter' to exit the program.";
+        std::cin.clear();
+        std::cin.ignore(std::cin.rdbuf()->in_avail());
+        std::cin.get();
+        std::cout << CSI << PLAYER_INPUT_Y + 10 << ";" << 0 << "H";
         exit(0);
         break;
     }
@@ -103,11 +138,15 @@ void Game::initializeTable()
         {
             if (x == 0)
             {
-                m_table[y][0].setType(EMPTY);
+                m_table[y][0].setType(POSITION);
             }
             if (x == 1)
             {
                 m_table[y][1].setType(EMPTY);
+            }
+            if (x == 2)
+            {
+                m_table[y][2].setType(EMPTY);
             }
             m_table[y][x].setPosition(Point2D{ x, y });
         }
@@ -117,7 +156,7 @@ void Game::initializeTable()
 void Game::drawWelcomeMessage()
 {
     std::cout << TITLE << MAGENTA << "Welcome to the player profile database!" << RESET_COLOR << std::endl;
-    std::cout << INDENT << "This database holds high-scores and who owns those high-scores." << std::endl;
+    std::cout << INDENT << "This database holds the top 10 high-scores and who owns those high-scores." << std::endl;
     std::cout << INDENT << "It can be used for any game you wish." << std::endl << std::endl;
 }
 
@@ -127,26 +166,51 @@ void Game::drawTable()
 
     // reset draw colors
     std::cout << RESET_COLOR;
-    std::cout << CSI << "9;70H";
-    std::cout << "| Name |" << std::endl;
-    std::cout << CSI << "9;79H";
-    std::cout << "High-Score |" << std::endl;
+    std::cout << CSI << "9;70H" << CSI << "4m";
+    std::cout << "Rank | " << std::endl;
+    std::cout << CSI << "9;77H";
+    std::cout << "Name | " << std::endl;
+    std::cout << CSI << "9;84H";
+    std::cout << "High-Score" << std::endl;
+    std::cout << CSI << "24m";
     for (position.y = 0; position.y < DISPLAY_HEIGHT; position.y++)
     {
         for (position.x = 0; position.x < DISPLAY_WIDTH; position.x++)
         {
-            m_table[position.y][position.x].drawSlots(position.y);
+            m_table[position.y][position.x].drawSlots();
         }
         std::cout << std::endl;
     }
 }
 
+void Game::drawCommandList()
+{
+    std::cout << CSI << 9 << ";" << 1 << "H";
+    std::cout << INDENT << "--------------Commands--------------" << std::endl;
+    std::cout << INDENT << "1. Add new player" << std::endl;
+    std::cout << INDENT << "2. Update player name" << std::endl;
+    std::cout << INDENT << "3. Update player score" << std::endl;
+    std::cout << INDENT << "4. Exit from database" << std::endl;
+}
+
+void Game::hideCommandList()
+{
+    for (int i = 9; i < 16; i++)
+    {
+        std::cout << CSI << i << ";" << 42 << "H";
+        std::cout << CSI << "1K";
+    }
+}
+
 void Game::updateScore()
 {
-    int position = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        std::cout << CSI << PLAYER_INPUT_Y + i << ";" << 0 << "H";
+        std::cout << CSI << "40X";
+    }
     
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-    std::cout << CSI << "40X";
     std::cout << INDENT << "Enter High-Score: " << INDENT << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
@@ -164,16 +228,13 @@ void Game::updateScore()
     }
     else
     {
-        m_table[position][1].setType(SCORE);
-        m_table[position][1].setScore(m_score, position);
-        position++;
+        m_table[m_playerArray][2].setType(SCORE);
+        m_table[m_playerArray][2].setScore(m_score, m_playerArray);
     }
 }
 
 void Game::updateInitials()
 {
-    int position = 0;
-
     std::cout << RESET_COLOR;
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
     std::cout << CSI << "40X";
@@ -193,9 +254,8 @@ void Game::updateInitials()
     }
     else
     {
-        m_table[position][0].setType(INITIALS);
-        m_table[position][0].setInitials(m_initials, position);
-        position++;
+        m_table[m_playerArray][1].setType(INITIALS);
+        m_table[m_playerArray][1].setInitials(m_initials, m_playerArray);
     }
 }
 
@@ -203,10 +263,10 @@ int Game::getChoice()
 {
     int input = 0;
     
-    std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+    std::cout << CSI << COMMAND_INPUT_Y << ";" << 0 << "H";
     std::cout << CSI << "40X";
     std::cout << INDENT << "What do you want to do?";
-    std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H" << YELLOW;
+    std::cout << CSI << COMMAND_INPUT_Y << ";" << PLAYER_INPUT_X << "H" << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
@@ -220,10 +280,52 @@ bool Game::correctInitials(char input[4])
 {
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
-        if (m_table[y][0].initialsMatch(y, input)  == EMPTY)
+        if (m_table[y][1].initialsMatch(y, input))
         {
+            m_playerArray = y;
             return true;
         }
     }
     return false;
+}
+
+bool Game::availableSpot()
+{
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        if (m_table[y][1].getType() == EMPTY)
+        {
+            m_playerArray = y;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Game::sort()
+{
+    bool sorted = false;
+    while (!sorted)
+    {
+        sorted = true;
+        for (int i = 0; i < DISPLAY_HEIGHT - 1; i++)
+        {
+            if (m_table[i][2].getScore(i) < m_table[i + 1][2].getScore(i + 1))
+            {
+                int temp1 = m_table[i][2].getScore(i);
+                int temp2 = m_table[i + 1][2].getScore(i + 1);
+                char temp3[4] = { m_table[i][1].getInitial(i, 0), 
+                                  m_table[i][1].getInitial(i, 1), 
+                                  m_table[i][1].getInitial(i, 2) };
+                char temp4[4] = { m_table[i + 1][1].getInitial(i + 1, 0), 
+                                  m_table[i + 1][1].getInitial(i + 1, 1), 
+                                  m_table[i + 1][1].getInitial(i + 1, 2) };
+                m_table[i][2].setScore(temp2, i);
+                m_table[i + 1][2].setScore(temp1, i + 1);
+                m_table[i][1].setInitials(temp4, i);
+                m_table[i + 1][1].setInitials(temp3, i + 1);
+                sorted = false;
+            }
+        }
+    }
 }

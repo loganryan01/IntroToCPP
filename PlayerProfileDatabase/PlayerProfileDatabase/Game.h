@@ -22,6 +22,8 @@ private:
 
 	void drawWelcomeMessage();
 	void drawTable();
+	void drawCommandList();
+	void hideCommandList();
 
 	void updateScore();
 	void updateInitials();
@@ -29,11 +31,14 @@ private:
 	int getChoice();
 
 	bool correctInitials(char input[4]);
+	bool availableSpot();
+
+	void sort();
 
 private:
 	bool m_gameOver;
 	int m_score;
+	int m_playerArray;
 	char m_initials[4];
 	Slot m_table[DISPLAY_HEIGHT][DISPLAY_WIDTH];
 };
-

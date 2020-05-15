@@ -14,8 +14,10 @@ public:
 
 	int getType();
 	bool initialsMatch(int y, char initials[4]);
+	int getScore(int slot);
+	char getInitial(int slot1, int slot2);
 
-	void drawSlots(int y);
+	void drawSlots();
 
 private:
 	Point2D m_tablePosition;
