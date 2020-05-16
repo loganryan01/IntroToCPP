@@ -138,15 +138,11 @@ void Game::initializeTable()
         {
             if (x == 0)
             {
-                m_table[y][0].setType(POSITION);
+                m_table[y][0].setType(EMPTY);
             }
             if (x == 1)
             {
                 m_table[y][1].setType(EMPTY);
-            }
-            if (x == 2)
-            {
-                m_table[y][2].setType(EMPTY);
             }
             m_table[y][x].setPosition(Point2D{ x, y });
         }
@@ -156,7 +152,7 @@ void Game::initializeTable()
 void Game::drawWelcomeMessage()
 {
     std::cout << TITLE << MAGENTA << "Welcome to the player profile database!" << RESET_COLOR << std::endl;
-    std::cout << INDENT << "This database holds the top 10 high-scores and who owns those high-scores." << std::endl;
+    std::cout << INDENT << "This database holds 10 high-scores and who owns those high-scores." << std::endl;
     std::cout << INDENT << "It can be used for any game you wish." << std::endl << std::endl;
 }
 
@@ -166,11 +162,9 @@ void Game::drawTable()
 
     // reset draw colors
     std::cout << RESET_COLOR;
-    std::cout << CSI << "9;70H" << CSI << "4m";
-    std::cout << "Rank | " << std::endl;
-    std::cout << CSI << "9;77H";
-    std::cout << "Name | " << std::endl;
-    std::cout << CSI << "9;84H";
+    std::cout << CSI << "9;70H" << CSI << "4m";;
+    std::cout << "| Name | " << std::endl;
+    std::cout << CSI << "9;79H";
     std::cout << "High-Score" << std::endl;
     std::cout << CSI << "24m";
     for (position.y = 0; position.y < DISPLAY_HEIGHT; position.y++)
@@ -228,8 +222,8 @@ void Game::updateScore()
     }
     else
     {
-        m_table[m_playerArray][2].setType(SCORE);
-        m_table[m_playerArray][2].setScore(m_score, m_playerArray);
+        m_table[m_playerArray][1].setType(SCORE);
+        m_table[m_playerArray][1].setScore(m_score, m_playerArray);
     }
 }
 
@@ -254,8 +248,8 @@ void Game::updateInitials()
     }
     else
     {
-        m_table[m_playerArray][1].setType(INITIALS);
-        m_table[m_playerArray][1].setInitials(m_initials, m_playerArray);
+        m_table[m_playerArray][0].setType(INITIALS);
+        m_table[m_playerArray][0].setInitials(m_initials, m_playerArray);
     }
 }
 
@@ -310,20 +304,21 @@ void Game::sort()
         sorted = true;
         for (int i = 0; i < DISPLAY_HEIGHT - 1; i++)
         {
-            if (m_table[i][2].getScore(i) < m_table[i + 1][2].getScore(i + 1))
+            if ((int)m_table[i + 1][0].getInitial(i + 1, 0) < (int)m_table[i][0].getInitial(i, 0) &&
+                m_table[i][1].getType() != EMPTY && m_table[i + 1][1].getType() != EMPTY)
             {
-                int temp1 = m_table[i][2].getScore(i);
-                int temp2 = m_table[i + 1][2].getScore(i + 1);
-                char temp3[4] = { m_table[i][1].getInitial(i, 0), 
-                                  m_table[i][1].getInitial(i, 1), 
-                                  m_table[i][1].getInitial(i, 2) };
-                char temp4[4] = { m_table[i + 1][1].getInitial(i + 1, 0), 
-                                  m_table[i + 1][1].getInitial(i + 1, 1), 
-                                  m_table[i + 1][1].getInitial(i + 1, 2) };
-                m_table[i][2].setScore(temp2, i);
-                m_table[i + 1][2].setScore(temp1, i + 1);
-                m_table[i][1].setInitials(temp4, i);
-                m_table[i + 1][1].setInitials(temp3, i + 1);
+                int temp1 = m_table[i][1].getScore(i);
+                int temp2 = m_table[i + 1][1].getScore(i + 1);
+                char temp3[4] = { m_table[i][0].getInitial(i, 0),
+                                  m_table[i][0].getInitial(i, 1),
+                                  m_table[i][0].getInitial(i, 2) };
+                char temp4[4] = { m_table[i + 1][0].getInitial(i + 1, 0),
+                                  m_table[i + 1][0].getInitial(i + 1, 1),
+                                  m_table[i + 1][0].getInitial(i + 1, 2) };
+                m_table[i][1].setScore(temp2, i);
+                m_table[i + 1][1].setScore(temp1, i + 1);
+                m_table[i][0].setInitials(temp4, i);
+                m_table[i + 1][0].setInitials(temp3, i + 1);
                 sorted = false;
             }
         }
