@@ -13,9 +13,15 @@ public:
 	void setInitials(char initials[4], int choice);
 
 	int getType();
-	bool initialsMatch(int y, char initials[4]);
 	int getScore(int slot);
 	char getInitial(int slot1, int slot2);
+
+	bool initialsMatch(int y, char initials[4]);
+	
+	void save(int j);
+	void saveScore(int j);
+	void saveInitials(int j);
+	void load();
 
 	void drawSlots();
 

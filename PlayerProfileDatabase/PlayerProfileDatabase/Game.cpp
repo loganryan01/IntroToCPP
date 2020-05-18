@@ -196,6 +196,7 @@ void Game::hideCommandList()
     }
 }
 
+// maximum score is a 9 digit number
 void Game::updateScore()
 {
     for (int i = 0; i < 2; i++)

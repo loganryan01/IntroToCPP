@@ -1,6 +1,7 @@
 #include "Slot.h"
 #include "GameDefines.h"
 #include <iostream>
+#include <fstream>
 
 Slot::Slot() : m_type{ EMPTY }, m_arraySize{ 0 }, m_tablePosition{ 0, 0 }, m_player{ new Player[10] }
 {
@@ -63,6 +64,61 @@ bool Slot::initialsMatch(int y, char initials[4])
     else
     {
         return false;
+    }
+}
+
+void Slot::save(int j)
+{
+    std::fstream file;
+    file.open("data.dat", std::ios::out | std::ios::binary);
+    if (file.is_open())
+    {
+        file.seekp(8 * j, std::ios::beg);
+        file.write((char*)&m_player[j], sizeof(Player));
+        file.close();
+    }
+}
+
+void Slot::saveScore(int j)
+{
+    std::fstream file;
+    file.open("data.dat", std::ios::out | std::ios::binary);
+    if (file.is_open())
+    {
+        file.seekp(8 * j, std::ios::beg);
+        file.write((char*)&m_player[j].score, sizeof(Player));
+        file.close();
+    }
+}
+
+void Slot::saveInitials(int j)
+{
+    std::fstream file;
+    file.open("data.dat", std::ios::out | std::ios::binary);
+    if (file.is_open())
+    {
+        file.seekp((8 * j) + 4, std::ios::beg);
+        file.write((char*)&m_player[j].score, sizeof(Player));
+        file.close();
+    }
+}
+
+void Slot::load()
+{
+    std::fstream file;
+    file.open("data.dat", std::ios::out | std::ios::binary);
+    if (file.is_open())
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            Player tempPlayer;
+            file.read((char*)&tempPlayer, sizeof(Player));
+            m_player[i].initials[0] = tempPlayer.initials[0];
+            m_player[i].initials[1] = tempPlayer.initials[1];
+            m_player[i].initials[2] = tempPlayer.initials[2];
+            m_player[i].score = tempPlayer.score;
+        }
+        file.close();
     }
 }
 
