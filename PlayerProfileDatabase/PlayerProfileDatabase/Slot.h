@@ -21,7 +21,8 @@ public:
 	void save(int j);
 	void saveScore(int j);
 	void saveInitials(int j);
-	void load();
+	void loadInitials();
+	void loadScore();
 
 	void drawSlots();
 

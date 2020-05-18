@@ -94,6 +94,13 @@ bool Game::startup()
         return false;
     }
 
+    m_table[0][0].loadInitials();
+    m_table[0][1].loadScore();
+    m_table[1][0].loadInitials();
+    m_table[1][1].loadScore();
+    m_table[2][0].loadInitials();
+    m_table[2][1].loadScore();
+
     initializeTable();
 
     drawWelcomeMessage();
@@ -138,11 +145,25 @@ void Game::initializeTable()
         {
             if (x == 0)
             {
-                m_table[y][0].setType(EMPTY);
+                if (m_table[y][0].getInitial(y, 0) != NULL)
+                {
+                    m_table[y][0].setType(INITIALS);
+                }
+                else
+                {
+                    m_table[y][0].setType(EMPTY);
+                }
             }
             if (x == 1)
             {
-                m_table[y][1].setType(EMPTY);
+                if (m_table[y][1].getScore(y) != NULL)
+                {
+                    m_table[y][1].setType(SCORE);
+                }
+                else
+                {
+                    m_table[y][1].setType(EMPTY);
+                }
             }
             m_table[y][x].setPosition(Point2D{ x, y });
         }
@@ -225,6 +246,7 @@ void Game::updateScore()
     {
         m_table[m_playerArray][1].setType(SCORE);
         m_table[m_playerArray][1].setScore(m_score, m_playerArray);
+        m_table[m_playerArray][1].saveScore(m_playerArray);
     }
 }
 
@@ -234,8 +256,6 @@ void Game::updateInitials()
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
     std::cout << CSI << "40X";
     std::cout << INDENT << "Enter initials of your name: " << INDENT << YELLOW;
-    std::cin.clear();
-    std::cin.ignore(std::cin.rdbuf()->in_avail());
 
     std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H";
     std::cin >> m_initials;
@@ -251,6 +271,7 @@ void Game::updateInitials()
     {
         m_table[m_playerArray][0].setType(INITIALS);
         m_table[m_playerArray][0].setInitials(m_initials, m_playerArray);
+        m_table[m_playerArray][0].saveInitials(m_playerArray);
     }
 }
 
@@ -288,7 +309,7 @@ bool Game::availableSpot()
 {
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
-        if (m_table[y][1].getType() == EMPTY)
+        if (m_table[y][0].getType() == EMPTY)
         {
             m_playerArray = y;
             return true;

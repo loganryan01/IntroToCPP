@@ -73,8 +73,8 @@ void Slot::save(int j)
     file.open("data.dat", std::ios::out | std::ios::binary);
     if (file.is_open())
     {
-        file.seekp(8 * j, std::ios::beg);
-        file.write((char*)&m_player[j], sizeof(Player));
+        //file.seekp(1, std::ios::beg);
+        file.write((char*)&m_player[0], sizeof(Player));
         file.close();
     }
 }
@@ -82,10 +82,9 @@ void Slot::save(int j)
 void Slot::saveScore(int j)
 {
     std::fstream file;
-    file.open("data.dat", std::ios::out | std::ios::binary);
+    file.open("data.dat", std::ios::app | std::ios::out | std::ios::binary);
     if (file.is_open())
     {
-        file.seekp(8 * j, std::ios::beg);
         file.write((char*)&m_player[j].score, sizeof(Player));
         file.close();
     }
@@ -94,28 +93,44 @@ void Slot::saveScore(int j)
 void Slot::saveInitials(int j)
 {
     std::fstream file;
-    file.open("data.dat", std::ios::out | std::ios::binary);
+    file.open("data.dat", std::ios::app | std::ios::out | std::ios::binary);
     if (file.is_open())
     {
-        file.seekp((8 * j) + 4, std::ios::beg);
-        file.write((char*)&m_player[j].score, sizeof(Player));
+        file.write((char*)&m_player[j].initials, sizeof(Player));
         file.close();
     }
 }
 
-void Slot::load()
+void Slot::loadInitials()
 {
     std::fstream file;
-    file.open("data.dat", std::ios::out | std::ios::binary);
+    file.open("data.dat", std::ios::in | std::ios::binary);
     if (file.is_open())
     {
         for (int i = 0; i < 10; i++)
         {
             Player tempPlayer;
+            file.seekp(16 * i, std::ios::beg);
             file.read((char*)&tempPlayer, sizeof(Player));
             m_player[i].initials[0] = tempPlayer.initials[0];
             m_player[i].initials[1] = tempPlayer.initials[1];
             m_player[i].initials[2] = tempPlayer.initials[2];
+        }
+        file.close();
+    }
+}
+
+void Slot::loadScore()
+{
+    std::fstream file;
+    file.open("data.dat", std::ios::in | std::ios::binary);
+    if (file.is_open())
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            Player tempPlayer;
+            file.seekp((16 * i) + 8, std::ios::beg);
+            file.read((char*)&tempPlayer.score, sizeof(Player));
             m_player[i].score = tempPlayer.score;
         }
         file.close();

@@ -2,8 +2,8 @@
 
 struct Player
 {
-    int score;
-    char initials[4];
+    char initials[4] = "\0";
+    int score = 0;
 };
 
 struct Point2D
