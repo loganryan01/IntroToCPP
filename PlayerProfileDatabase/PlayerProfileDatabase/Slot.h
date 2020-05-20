@@ -17,12 +17,12 @@ public:
 	char getInitial(int slot1, int slot2);
 
 	bool initialsMatch(int y, char initials[4]);
+	int binarySearch(char initials[4]);
 	
-	void save(int j);
 	void saveScore(int j);
 	void saveInitials(int j);
-	void loadInitials();
-	void loadScore();
+	void loadInitials(int j);
+	void loadScore(int j);
 
 	void drawSlots();
 

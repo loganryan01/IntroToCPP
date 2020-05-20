@@ -16,9 +16,8 @@ Game::~Game()
 
 void Game::update()
 {
-    
     char input[4];
-
+    
     drawCommandList();
 
     int choice = getChoice();
@@ -32,7 +31,6 @@ void Game::update()
         {
             updateInitials();
             updateScore();
-            sort();
         }
         else
         {
@@ -54,6 +52,14 @@ void Game::update()
         {
             updateInitials();
         }
+        else
+        {
+            std::cout << INDENT << "That name does not exist" << std::endl;
+            std::cout << INDENT << "Press 'Enter' to continue.";
+            std::cin.clear();
+            std::cin.ignore(std::cin.rdbuf()->in_avail());
+            std::cin.get();
+        }
         break;
     case 3: // Change player score
         std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
@@ -65,6 +71,14 @@ void Game::update()
         if (correctInitials(input))
         {
             updateScore();
+        }
+        else
+        {
+            std::cout << INDENT << "That name does not exist" << std::endl;
+            std::cout << INDENT << "Press 'Enter' to continue.";
+            std::cin.clear();
+            std::cin.ignore(std::cin.rdbuf()->in_avail());
+            std::cin.get();
         }
         break;
     case 4: // Exit form database
@@ -81,6 +95,7 @@ void Game::update()
 
 void Game::draw()
 {
+    sort();
     drawTable();
 }
 
@@ -94,12 +109,7 @@ bool Game::startup()
         return false;
     }
 
-    m_table[0][0].loadInitials();
-    m_table[0][1].loadScore();
-    m_table[1][0].loadInitials();
-    m_table[1][1].loadScore();
-    m_table[2][0].loadInitials();
-    m_table[2][1].loadScore();
+    load();
 
     initializeTable();
 
@@ -156,17 +166,26 @@ void Game::initializeTable()
             }
             if (x == 1)
             {
-                if (m_table[y][1].getScore(y) != NULL)
+                if (m_table[y][1].getScore(y) < NULL)
                 {
-                    m_table[y][1].setType(SCORE);
+                    m_table[y][1].setType(EMPTY);
                 }
                 else
                 {
-                    m_table[y][1].setType(EMPTY);
+                    m_table[y][1].setType(SCORE);
                 }
             }
             m_table[y][x].setPosition(Point2D{ x, y });
         }
+    }
+}
+
+void Game::load()
+{
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        m_table[y][0].loadInitials(y);
+        m_table[y][1].loadScore(y);
     }
 }
 
@@ -296,7 +315,7 @@ bool Game::correctInitials(char input[4])
 {
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
-        if (m_table[y][1].initialsMatch(y, input))
+        if (m_table[y][0].binarySearch(input) > -1)
         {
             m_playerArray = y;
             return true;

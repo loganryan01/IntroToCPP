@@ -19,6 +19,7 @@ public:
 private:
 	bool enableVirtualTerminal();
 	void initializeTable();
+	void load();
 
 	void drawWelcomeMessage();
 	void drawTable();
