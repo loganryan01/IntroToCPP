@@ -4,6 +4,7 @@
 
 Zergling::Zergling()
 {
+	health = 20;
 }
 
 
@@ -13,9 +14,9 @@ Zergling::~Zergling()
 
 int Zergling::attack() 
 {
-	return 10;
+	int damage = (rand() % 10) + 1;
+	return damage;
 }
-
 
 void Zergling::takeDamage(int damage)
 {

@@ -97,7 +97,7 @@ void Slot::saveScore(int j)
     file.open("data.out", std::ios::in | std::ios::binary | std::ios::out);
     if (file.is_open())
     {
-        file.seekp(12 * j + 8, std::ios::beg);
+        file.seekp(sizeof(Slot) * j + 8, std::ios::beg);
         file.write((char*)&m_player[j].score, sizeof(int));
         file.close();
     }
@@ -109,7 +109,7 @@ void Slot::saveInitials(int j)
     file.open("data.out", std::ios::in | std::ios::binary | std::ios::out);
     if (file.is_open())
     {
-        file.seekp(12 * j, std::ios::beg);
+        file.seekp(sizeof(Slot) * j, std::ios::beg);
         file.write((char*)&m_player[j].initials, sizeof(Player));
         file.close();
     }
@@ -122,7 +122,7 @@ void Slot::loadInitials(int j)
     if (file.is_open())
     {
         Player tempPlayer;
-        file.seekg(j * 12, std::ios::beg);
+        file.seekg(j * sizeof(Slot), std::ios::beg);
         file.read((char*)&tempPlayer, sizeof(Player));
         m_player[j].initials[0] = tempPlayer.initials[0];
         m_player[j].initials[1] = tempPlayer.initials[1];
@@ -138,7 +138,7 @@ void Slot::loadScore(int j)
     if (file.is_open())
     {
         int newScore;
-        file.seekg(12 * j + 8, std::ios::beg);
+        file.seekg(sizeof(Slot) * j + 8, std::ios::beg);
         file.read((char*)&newScore, sizeof(int));
         m_player[j].score = newScore;
         file.close();

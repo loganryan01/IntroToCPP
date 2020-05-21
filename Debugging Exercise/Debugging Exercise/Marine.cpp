@@ -14,10 +14,13 @@ Marine::~Marine()
 
 int Marine::attack()
 {
-	return 10;
+	int damage = (rand() % 15) + 1;
+	return damage;
 }
 
 void Marine::takeDamage(int damage)
 {
 	health -= damage;
+	if (health < 0)
+		health = 0;
 }

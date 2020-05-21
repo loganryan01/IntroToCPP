@@ -18,9 +18,7 @@
 #include "Marine.h"
 #include "Zergling.h"
 
-using std::vector;
-using std::cout;
-using std::endl;
+using namespace std;
 
 bool marineAlive(vector<Marine> squad);
 bool zerglingAlive(vector<Zergling> swarm);
@@ -42,27 +40,30 @@ int main()
 	}
 
 	Zergling z;
-	for (size_t i = 0; i < squadSize; i++)
+	for (size_t i = 0; i < swarmSize; i++)
 	{
 		swarm.push_back(z);
 	}
 
 	cout << "A squad of marines approaches a swarm of Zerglings and opens fire! The Zerglings charge!" << endl;
 	// Attack each other until only one team is left alive
-	while (marineAlive(squad) || zerglingAlive(swarm)) // If anyone is left alive to fight . . .
+	while (marineAlive(squad) && zerglingAlive(swarm)) // If anyone is left alive to fight . . .
 	{
 		if (marineAlive(squad)) // if there's at least one marine alive
 		{
-			for (size_t i = 0; i < squadSize; i++) // go through the squad
+			for (vector<Marine>::iterator i = squad.begin(); i != squad.end(); ++i) // go through the squad
 			{
 				// each marine will attack the first zergling in the swarm
-				cout << "A marine fires for " << squad[i].attack() << " damage. " << endl;
-				int damage = squad[i].attack();
-				swarm[0].takeDamage(damage);
-				if (!swarm[0].isAlive()) // if the zergling dies, it is removed from the swarm
+				cout << "A marine fires for " << i->attack() << " damage. " << endl;
+				swarm.begin()->takeDamage(i->attack());
+				if (!swarm.begin()->isAlive()) // if the zergling dies, it is removed from the swarm
 				{
 					cout << "The zergling target dies" << endl;
 					swarm.erase(swarm.begin());
+				}
+				if (!zerglingAlive(swarm))
+				{
+					break;
 				}
 			}
 		}
@@ -72,14 +73,15 @@ int main()
 			{
 				cout << "A zergling attacks for " << i->attack() << " damage." << endl;
 				squad.begin()->takeDamage(i->attack());
-				if (squad.begin()->isAlive())
+				if (!squad.begin()->isAlive())
 				{
-
-				}
-				else
 					squad.erase(squad.begin());
 					cout << "The marine succumbs to his wounds." << endl;
-					
+				}
+				if (!marineAlive(squad))
+				{
+					break;
+				}
 			}
 		}
 	}
@@ -104,5 +106,5 @@ bool marineAlive(vector<Marine> squad)
 // Is there a zergling Alive
 bool zerglingAlive(vector<Zergling> swarm)
 {
-	return swarm.size();
+	return swarm.size() > 0;
 }

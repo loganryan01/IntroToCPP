@@ -2,7 +2,7 @@
 
 
 
-Entity::Entity() : health{ }, maxHealth{ }
+Entity::Entity() : health{ }
 {
 }
 

@@ -1,4 +1,6 @@
 #pragma once
+#include <cstdlib>
+#include <ctime>
 class Entity
 {
 public:
@@ -11,6 +13,5 @@ public:
 
 public:
 	int health;
-	int maxHealth;
 };
 
