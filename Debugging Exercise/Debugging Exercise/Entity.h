@@ -13,5 +13,6 @@ public:
 
 public:
 	int health;
+	int maxDamage;
 };
 

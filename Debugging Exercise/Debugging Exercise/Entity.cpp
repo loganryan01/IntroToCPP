@@ -2,7 +2,7 @@
 
 
 
-Entity::Entity() : health{ 50 }
+Entity::Entity() : health{ 50 }, maxDamage{ 15 }
 {
 }
 

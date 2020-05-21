@@ -144,12 +144,16 @@
   <ItemGroup>
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Marine.h" />
+    <ClInclude Include="Mutalisk.h" />
+    <ClInclude Include="Valkyrie.h" />
     <ClInclude Include="Zergling.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Marine.cpp" />
+    <ClCompile Include="Mutalisk.cpp" />
+    <ClCompile Include="Valkyrie.cpp" />
     <ClCompile Include="Zergling.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,2 +1,12 @@
 ﻿  Main.cpp
-  Debugging Exercise.vcxproj -> D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\x64\Debug\Debugging Exercise.exe
+  Marine.cpp
+  Mutalisk.cpp
+D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\Debugging Exercise\Mutalisk.h(10,6): error C3668: 'Mutalisk::attack': method with override specifier 'override' did not override any base class methods
+D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\Debugging Exercise\Mutalisk.h(11,7): error C3668: 'Mutalisk::takeDamage': method with override specifier 'override' did not override any base class methods
+D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\Debugging Exercise\Mutalisk.cpp(7,2): error C2065: 'health': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\Debugging Exercise\Mutalisk.cpp(24,2): error C2065: 'health': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\Debugging Exercise\Mutalisk.cpp(25,6): error C2065: 'health': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\Debugging Exercise\Mutalisk.cpp(26,3): error C2065: 'health': undeclared identifier
+  Valkyrie.cpp
+  Zergling.cpp
+  Generating Code...

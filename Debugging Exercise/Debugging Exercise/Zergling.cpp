@@ -4,7 +4,7 @@
 
 Zergling::Zergling()
 {
-	//health = 50;
+	health = 35;
 }
 
 
@@ -12,12 +12,13 @@ Zergling::~Zergling()
 {
 }
 
+// Decide the amount of damage the zergling will do
 int Zergling::attack() 
 {
-	int damage = (rand() % 15) + 1;
-	return damage;
+	return 5;
 }
 
+// Decrease zergling health by the amount of damage taken from marine
 void Zergling::takeDamage(int damage)
 {
 	health -= damage;

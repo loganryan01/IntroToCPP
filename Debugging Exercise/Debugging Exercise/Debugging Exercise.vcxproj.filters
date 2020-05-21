@@ -24,6 +24,12 @@
     <ClInclude Include="Zergling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Valkyrie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mutalisk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp">
@@ -36,6 +42,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Valkyrie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mutalisk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

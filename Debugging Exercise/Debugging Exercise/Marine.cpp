@@ -4,7 +4,7 @@
 
 Marine::Marine()
 {
-	//health = 50;
+	health = 40;
 }
 
 
@@ -12,12 +12,13 @@ Marine::~Marine()
 {
 }
 
+// Decide the amount of damage the marine will do
 int Marine::attack()
 {
-	int damage = (rand() % 15) + 1;
-	return damage;
+	return 6;
 }
 
+// Decrease marine health by the amount of damage taken from zergling
 void Marine::takeDamage(int damage)
 {
 	health -= damage;

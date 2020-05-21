@@ -29,7 +29,7 @@ bool zerglingAlive();
 void marineTurn();
 void zerglingTurn();
 void extendMarineSquad();
-//void extendZerglingSquad();
+void extendZerglingSwarm();
 
 int main()
 {
@@ -136,12 +136,43 @@ void zerglingTurn()
 // If you want to extend the Marine squad
 void extendMarineSquad()
 {
-	// Replace the 0 with how many more marines you want to add
+	Marine m;
+
+	// Replace the 0 with the numbers that you want
+	
+	// How many more marines you want to add
 	int newMarines = 0;
 
-	Marine m;
+	// Choose new health for new marines. Default is 50
+	m.health = 0;
+
+	// Choose new maximum damage for new marines. Default is 15. Damage is random between 1 and 15.
+	m.maxDamage = 0;
+
 	for (size_t i = 0; i < newMarines; i++)
 	{
 		squad.push_back(m);
+	}
+}
+
+// If you want to extend the Zergling swarm
+void extendZerglingSwarm()
+{
+	Zergling z;
+
+	// Replace the 0 with the numbers that you want
+
+	// How many more zerglings you want to add
+	int newZerglings = 0;
+
+	// Choose new health for new zerglings. Default is 50
+	z.health = 0;
+
+	// Choose new maximum damage for new zerglings. Default is 15. Damage is random between 1 and 15.
+	z.maxDamage = 0;
+
+	for (size_t i = 0; i < newZerglings; i++)
+	{
+		swarm.push_back(z);
 	}
 }
