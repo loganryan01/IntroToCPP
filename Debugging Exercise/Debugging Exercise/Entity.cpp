@@ -2,7 +2,7 @@
 
 
 
-Entity::Entity() : health{ }
+Entity::Entity() : health{ 50 }
 {
 }
 
