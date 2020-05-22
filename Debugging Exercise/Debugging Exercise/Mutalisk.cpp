@@ -15,7 +15,7 @@ Mutalisk::~Mutalisk()
 // Decide the amount of damage the mutalisk will do
 int Mutalisk::attack()
 {
-	return 48;
+	return 27;
 }
 
 // Decrease mutalisk health by the amount of damage taken from humans

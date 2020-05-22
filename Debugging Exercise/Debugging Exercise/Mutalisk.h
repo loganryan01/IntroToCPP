@@ -1,7 +1,7 @@
 #pragma once
 #include "Entity.h"
 
-class Mutalisk: public Entity
+class Mutalisk : public Entity
 {
 public:
 	Mutalisk();
