@@ -8,6 +8,5 @@ public:
 	~Zergling();
 
 	int attack() override;
-	void takeDamage(int damage) override;
 };
 

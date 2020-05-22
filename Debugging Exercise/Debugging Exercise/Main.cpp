@@ -85,30 +85,34 @@ bool EnableVTMode()
 // Set up the Squad and the Swarm at their initial sizes listed below
 void startup()
 {
-	// Enter the starting size of the squads
+	// Enter the size of the squads
 	int squadSize = 12;
 	int swarmSize = 12;
 	int fleetSize = 6;
 	int airSwarmSize = 6;
 
+	// Create the marine squad 
 	Marine m;
 	for (size_t i = 0; i < squadSize; i++)
 	{
 		squad.push_back(m);
 	}
 
+	// Create the zergling swarm
 	Zergling z;
 	for (size_t i = 0; i < swarmSize; i++)
 	{
 		swarm.push_back(z);
 	}
 
+	// Create the valkyrie fleet
 	Valkyrie v;
 	for (size_t i = 0; i < fleetSize; i++)
 	{
 		fleet.push_back(v);
 	}
 
+	// Create the mutalisk swarm
 	Mutalisk u;
 	for (size_t i = 0; i < airSwarmSize; i++)
 	{
@@ -116,6 +120,7 @@ void startup()
 	}
 }
 
+// This will be the battle between the marines and the zerglings
 void groundBattle()
 {
 	cout << CSI << "1;0H";
@@ -131,7 +136,7 @@ void groundBattle()
 	cout << "The fight on the ground is over. ";
 	if (marineAlive())
 	{
-		cout << "The Marines win but the battle continues in the air." << endl;
+		cout << "The Marines win but the war continues in the air." << endl;
 		cout << "Press 'Enter' to continue" << endl;
 		cin.get();
 		cout << CSI << "2;0H";
@@ -139,7 +144,7 @@ void groundBattle()
 	}
 	else
 	{
-		cout << "The Zerg win but the battle continues in the air." << endl;
+		cout << "The Zerg win but the war continues in the air." << endl;
 		cout << "Press 'Enter' to continue" << endl;
 		cin.get();
 		cout << CSI << "2;0H";
@@ -147,6 +152,7 @@ void groundBattle()
 	}
 }
 
+// This is the battle between the valkyries and the mutalisks
 void airBattle()
 {
 	cout << CSI << "1;0H";
@@ -231,7 +237,6 @@ void marineTurn()
 			{
 				break;
 			}
-			
 		}
 		cout << "Press 'Enter' to continue" << endl;
 		cin.get();
@@ -272,7 +277,7 @@ void zerglingTurn()
 // It's the Mutalisk turn
 void mutaliskTurn()
 {
-	if (mutaliskAlive()) // if there's at least one zergling alive
+	if (mutaliskAlive()) // if there's at least one mutalisk alive
 	{
 		cout << CSI << "2;0H";
 		for (vector<Mutalisk>::iterator i = airSwarm.begin(); i != airSwarm.end(); ++i) // loop through mutalisk
@@ -286,7 +291,7 @@ void mutaliskTurn()
 				cout << "The valkyrie explodes killing the pilot." << endl;
 				cout << "There are " << fleet.size() << " valkyrie left." << endl;
 			}
-			if (!valkyrieAlive()) // if there is no more valkyrie left end the turn
+			if (!valkyrieAlive()) // if there is no more valkyries left end the turn
 			{
 				break;
 			}
@@ -315,7 +320,7 @@ void valkyrieTurn()
 				cout << "The mutalisk target dies" << endl;
 				cout << "There are " << airSwarm.size() << " Mutalisk left." << endl;
 			}
-			if (!mutaliskAlive()) // if there is no more mutalisk left end the turn
+			if (!mutaliskAlive()) // if there is no more mutalisks left end the turn
 			{
 				break;
 			}

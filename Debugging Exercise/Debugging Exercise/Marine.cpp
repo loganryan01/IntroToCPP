@@ -2,26 +2,20 @@
 
 
 
+// Set the health for the marines
 Marine::Marine()
 {
 	health = 40;
+	srand((unsigned)time(0));
 }
-
 
 Marine::~Marine()
 {
 }
 
-// Decide the amount of damage the marine will do
+// Generate a random number between 1 and 5
 int Marine::attack()
 {
-	return 6;
-}
-
-// Decrease marine health by the amount of damage taken from zergling
-void Marine::takeDamage(int damage)
-{
-	health -= damage;
-	if (health < 0)
-		health = 0;
+	int attack = rand() % 5 + 1;
+	return attack;
 }

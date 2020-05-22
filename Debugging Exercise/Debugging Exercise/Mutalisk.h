@@ -8,6 +8,5 @@ public:
 	~Mutalisk();
 
 	int attack() override;
-	void takeDamage(int damage) override;
 };
 

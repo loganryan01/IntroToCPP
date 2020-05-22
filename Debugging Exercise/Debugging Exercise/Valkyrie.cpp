@@ -1,10 +1,11 @@
 #include "Valkyrie.h"
 
 
-
+// set the health for the valkyrie
 Valkyrie::Valkyrie()
 {
-	health = 200;
+	health = 80;
+	srand((unsigned)time(0));
 }
 
 Valkyrie::~Valkyrie()
@@ -12,16 +13,9 @@ Valkyrie::~Valkyrie()
 
 }
 
-// Decide the amount of damage the valkyrie will do
+// Generate a number between 1 and 10
 int Valkyrie::attack()
 {
-	return 48;
-}
-
-// Decrease valkyrie health by the amount of damage taken from zerg
-void Valkyrie::takeDamage(int damage)
-{
-	health -= damage;
-	if (health < 0)
-		health = 0;
+	int attack = rand() % 10 + 1;
+	return attack;
 }

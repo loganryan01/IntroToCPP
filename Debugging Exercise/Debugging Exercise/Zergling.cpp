@@ -1,27 +1,19 @@
 #include "Zergling.h"
 
-
-
+// Set the health for the zergling
 Zergling::Zergling()
 {
-	health = 35;
+	health = 40;
+	srand(time(0));
 }
-
 
 Zergling::~Zergling()
 {
 }
 
-// Decide the amount of damage the zergling will do
-int Zergling::attack() 
+// Generate a random number between 1 and 5
+int Zergling::attack()
 {
-	return 5;
-}
-
-// Decrease zergling health by the amount of damage taken from marine
-void Zergling::takeDamage(int damage)
-{
-	health -= damage;
-	if (health < 0)
-		health = 0;
+	int attack = rand() % 5 + 1;
+	return attack;
 }

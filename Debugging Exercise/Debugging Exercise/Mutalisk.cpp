@@ -1,10 +1,10 @@
 #include "Mutalisk.h"
 
-
-
+// Set the health for the mutalisk
 Mutalisk::Mutalisk()
 {
-	health = 120;
+	health = 80;
+	srand((unsigned)time(0));
 }
 
 Mutalisk::~Mutalisk()
@@ -12,16 +12,9 @@ Mutalisk::~Mutalisk()
 
 }
 
-// Decide the amount of damage the mutalisk will do
+// Generate a random number between 1 and 10
 int Mutalisk::attack()
 {
-	return 27;
-}
-
-// Decrease mutalisk health by the amount of damage taken from humans
-void Mutalisk::takeDamage(int damage)
-{
-	health -= damage;
-	if (health < 0)
-		health = 0;
+	int attack = rand() % 10 + 1;
+	return attack;
 }

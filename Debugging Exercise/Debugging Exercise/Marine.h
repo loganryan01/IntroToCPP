@@ -8,6 +8,5 @@ public:
 	~Marine();
 
 	int attack() override;
-	void takeDamage(int damage) override;
 };
 

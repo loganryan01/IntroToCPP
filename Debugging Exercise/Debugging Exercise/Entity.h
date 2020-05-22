@@ -8,10 +8,9 @@ public:
 	~Entity();
 
 	virtual int attack();
-	virtual void takeDamage(int damage);
+	void takeDamage(int damage);
 	bool isAlive();
 
 public:
 	int health;
-	int maxDamage;
 };

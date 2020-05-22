@@ -1,8 +1,8 @@
 #include "Entity.h"
 
 
-
-Entity::Entity() : health{ 50 }, maxDamage{ 15 }
+// The default health for all entities is 50
+Entity::Entity() : health{ 50 }
 {
 }
 
@@ -13,14 +13,23 @@ Entity::~Entity()
 
 int Entity::attack()
 {
-	return 0;
+	return 10;
 }
 
+// This calculates the new health for the entities
 void Entity::takeDamage(int damage)
 {
+	health -= damage;
+	if (health < 0)
+		health = 0;
 }
 
+// Checks if a single entity is alive
 bool Entity::isAlive()
 {
-	return health;
+	if (health > 0)
+	{
+		return true;
+	}
+	return false;
 }
