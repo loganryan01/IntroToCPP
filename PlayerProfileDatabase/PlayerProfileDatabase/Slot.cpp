@@ -1,158 +1,299 @@
+/*-----------------------------------------------------------------------
+    File Name: Slot.cpp
+    Purpose: Draws the slots on the screen, saves the data to binary file
+             and loads the data from the binary file.
+    Author: Logan Ryan
+    Modified: 24 May 2020
+-------------------------------------------------------------------------
+    Copyright 2020 Logan Ryan.
+-----------------------------------------------------------------------*/
+
 #include "Slot.h"
 #include "GameDefines.h"
 #include <iostream>
 #include <fstream>
 
-Slot::Slot() : m_type{ EMPTY }, m_arraySize{ 0 }, m_tablePosition{ 0, 0 }, m_player{ new Player[10] }
+//----------------------------------------------------------------------
+// Initialise all the variables in this class.
+//   m_type: What type of information is in the slot?
+//           The default is empty.
+//   m_tablePosition: Where is this slot positioned?
+//                    The default is 0, 0.
+//   m_player: The dynamic array to store all the player information.
+//             The array is created in each of the slots and can hold 10
+//             players in it.
+//----------------------------------------------------------------------
+Slot::Slot() : m_type{ EMPTY }, m_tablePosition{ 0, 0 }, 
+m_player{ new Player[10] }
 {
 }
 
+//---------------------------------------------------------------
+// Destroys the dynamic array when the class is no longer in use.
+//---------------------------------------------------------------
 Slot::~Slot()
 {
     delete[] m_player;
 }
 
+//----------------------------------------------------
+// Changes the position of the slot.
+//   position (Point2D): The new position of the slot.
+//----------------------------------------------------
 void Slot::setPosition(Point2D position)
 {
 	m_tablePosition = position;
 }
 
+//--------------------------------------------------------------------
+// Changes the type of information that the slot is holding.
+//   type (int): The new type of information that the slot is holding.
+//               Valid values are:
+//               0 = Empty, 1 = Score, 2 = Initials
+//--------------------------------------------------------------------
 void Slot::setType(int type)
 {
 	m_type = type;
 }
 
-void Slot::setScore(int score, int position)
+//------------------------------------------------------------
+// Changes the score of the player.
+//   score (int): The new score for the player.
+//   playerNumber (int): Which player's score are we changing?
+//                       Valid values are 0-9
+//------------------------------------------------------------
+void Slot::setScore(int score, int playerNumber)
 {
-    m_player[position].score = score;
+    m_player[playerNumber].score = score;
 }
 
-void Slot::setInitials(char initials[4], int position)
+//------------------------------------------------------------
+// Changes the initials of the player.
+//   initials (char[4]): The new name for the player.
+//   playerNumber (int): Which player's score are we changing?
+//                       Valid values are 0-9
+//------------------------------------------------------------
+void Slot::setInitials(char initials[4], int playerNumber)
 {
-    strncpy_s(m_player[position].initials, initials, 4);
+    strncpy_s(m_player[playerNumber].initials, initials, 4);
 }
 
+//-----------------------------------------------------------------
+// Get the type of information that the slot is holding.
+//   return (int): Returns the type of information that the slot is
+//                 holding.
+//-----------------------------------------------------------------
 int Slot::getType()
 {
 	return m_type;
 }
 
-int Slot::getScore(int slot)
+//-----------------------------------------------------------
+// Get the score of the specified player. 
+//   playerNumber (int): Which player's score are we getting?
+//                       Valid values are 0-9
+//   return (int): Returns the score of the specified player.
+//-----------------------------------------------------------
+int Slot::getScore(int playerNumber)
 {
-    return m_player[slot].score;
+    return m_player[playerNumber].score;
 }
 
-char Slot::getInitial(int slot1, int slot2)
+//--------------------------------------------------------------
+// Get an initial of the specified player. 
+//   playerNumber (int): Which player's score are we getting?
+//                       Valid values are 0-9
+//   initialsPosition (int): Which initial are we getting?
+//   return (char): Returns the initial of the specified player.
+//--------------------------------------------------------------
+char Slot::getInitial(int playerNumber, int initialsPosition)
 {
-    return m_player[slot1].initials[slot2];
+    return m_player[playerNumber].initials[initialsPosition];
 }
 
-bool Slot::initialsMatch(int y, char initials[4])
-{
-    int correct = 0;
-    
-    for (int i = 0; i < 4; i++)
-    {
-        if (initials[i] == m_player[y].initials[i])
-            correct++;
-    }
-
-    if (correct == 4)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
+//-------------------------------------------------------------------
+// Search the dynamic array for the matching initials.
+//   initials (char[4]): The name of the player we are searching for.
+//   return (int): Returns the position of the initials in the array.
+//-------------------------------------------------------------------
 int Slot::binarySearch(char initials[4])
 {
-    int l = 0;
-    int r = 10 - 1;
-    while (l <= r)
+    int startIndex = 0;
+    int endIndex = sizeof(m_player) - 1;
+
+    // Loop while startIndex is less or equal to endIndex.
+    while (startIndex <= endIndex)
     {
-        int m = ((l + r) / 2);
-        if (m_player[m].initials[0] == initials[0] && m_player[m].initials[1] == initials[1] && m_player[m].initials[2] == initials[2])
+        int middleIndex = ((startIndex + endIndex) / 2);
+
+        // Check if we've found the right number already here, and return
+        // the middle index if we have.
+        if (m_player[middleIndex].initials[0] == initials[0] && 
+            m_player[middleIndex].initials[1] == initials[1] && 
+            m_player[middleIndex].initials[2] == initials[2])
         {
-            return m;
+            return middleIndex;
         }
 
-        if (m_player[m].initials[0] < initials[0] || m_player[m].initials[1] < initials[1] || m_player[m].initials[2] < initials[2])
+        // If we haven't found the right number, we compare the ASCII
+        // values of the characters of the initials and change the
+        // start and end indexes to shrink our search range for the next
+        // iteration.
+        if (m_player[middleIndex].initials[0] < initials[0] || 
+            m_player[middleIndex].initials[1] < initials[1] || 
+            m_player[middleIndex].initials[2] < initials[2])
         {
-            r = m - 1;
+            endIndex = middleIndex - 1;
         }
         else
         {
-            l = m + 1;
+            startIndex = middleIndex + 1;
         }
     }
+
+    // If we get here we haven't found the correct name and we return -1
+    // to indicate failure.
     return -1;
 }
 
-void Slot::saveScore(int j)
+//-------------------------------------------------
+// Save the player score to binary file.
+//   playerNumber (int): Whose score are we saving?
+//-------------------------------------------------
+void Slot::saveScore(int playerNumber)
 {
     std::fstream file;
-    file.open("data.out", std::ios::in | std::ios::binary | std::ios::out);
+
+    // Open the file ready to write.
+    file.open("information.out", std::ios::in | std::ios::binary | std::ios::out);
+    
+    // Check that the file is open.
     if (file.is_open())
     {
-        file.seekp(sizeof(Slot) * j + 8, std::ios::beg);
-        file.write((char*)&m_player[j].score, sizeof(int));
+        // Move the write marker to the correct byte in the file by
+        // starting from the beginning of the file then multiplying 
+        // the size of the Slot class by the playerNumber and add 8.
+        file.seekp(sizeof(Slot) * playerNumber + 8, std::ios::beg);
+
+        // Write the players score.
+        file.write((char*)&m_player[playerNumber].score, sizeof(int));
+
+        // Close the file when the operation is done.
         file.close();
     }
 }
 
-void Slot::saveInitials(int j)
+//----------------------------------------------------
+// Save the player name to binary file.
+//   playerNumber (int): Whose initials are we saving?
+//----------------------------------------------------
+void Slot::saveInitials(int playerNumber)
 {
     std::fstream file;
-    file.open("data.out", std::ios::in | std::ios::binary | std::ios::out);
+
+    // Open the file ready to write.
+    file.open("information.out", std::ios::in | std::ios::binary | std::ios::out);
+    
+    // Check that the file is open.
     if (file.is_open())
     {
-        file.seekp(sizeof(Slot) * j, std::ios::beg);
-        file.write((char*)&m_player[j].initials, sizeof(Player));
+        // Move the write marker to the correct byte in the file by
+        // starting from the beginning of the file then multiplying 
+        // the size of the Slot class by the playerNumber.
+        file.seekp(sizeof(Slot) * playerNumber, std::ios::beg);
+
+        // Write the players name.
+        file.write((char*)&m_player[playerNumber].initials, sizeof(Player));
+        
+        // Close the file when the operation is done.
         file.close();
     }
 }
 
-void Slot::loadInitials(int j)
+//----------------------------------------------------------------
+// Load the player name from the binary file.
+//   playerNumber (int): Where is the initials going in the array?
+//----------------------------------------------------------------
+void Slot::loadInitials(int playerNumber)
 {
     std::fstream file;
-    file.open("data.out", std::ios::in | std::ios::binary);
+
+    // Open the file ready to read.
+    file.open("information.out", std::ios::in | std::ios::binary);
+
+    // Check that the file is open.
     if (file.is_open())
     {
         Player tempPlayer;
-        file.seekg(j * sizeof(Slot), std::ios::beg);
+
+        // Move the read marker to the correct byte in the file by
+        // starting from the beginning of the file then multiplying 
+        // the size of the Slot class by the playerNumber.
+        file.seekg(playerNumber * sizeof(Slot), std::ios::beg);
+
+        // Read the player name
         file.read((char*)&tempPlayer, sizeof(Player));
-        m_player[j].initials[0] = tempPlayer.initials[0];
-        m_player[j].initials[1] = tempPlayer.initials[1];
-        m_player[j].initials[2] = tempPlayer.initials[2];
+
+        // Set the player name to the correct position
+        m_player[playerNumber].initials[0] = tempPlayer.initials[0];
+        m_player[playerNumber].initials[1] = tempPlayer.initials[1];
+        m_player[playerNumber].initials[2] = tempPlayer.initials[2];
+
+        // Close the file when the operation is done.
         file.close();
     }
 }
 
-void Slot::loadScore(int j)
+//-------------------------------------------------------------
+// Load the player score from the binary file.
+//   playerNumber (int): Where is the score going in the array?
+//-------------------------------------------------------------
+void Slot::loadScore(int playerNumber)
 {
     std::fstream file;
-    file.open("data.out", std::ios::in | std::ios::binary);
+
+    // Open the file ready to read.
+    file.open("information.out", std::ios::in | std::ios::binary);
+
+    // Check that the file is open.
     if (file.is_open())
     {
         int newScore;
-        file.seekg(sizeof(Slot) * j + 8, std::ios::beg);
+
+        // Move the read marker to the correct byte in the file by
+        // starting from the beginning of the file then multiplying 
+        // the size of the Slot class by the playerNumber and add 8.
+        file.seekg(sizeof(Slot) * playerNumber + 8, std::ios::beg);
+
+        // Read the player score
         file.read((char*)&newScore, sizeof(int));
-        m_player[j].score = newScore;
+
+        // Set the player score to the correct position
+        m_player[playerNumber].score = newScore;
+
+        // Close the file when the operation is done.
         file.close();
     }
 }
 
+//----------------
+// Draw the slots.
+//----------------
 void Slot::drawSlots()
 {
-    // find the console output position
-    int outX = INDENT_X + (7 * m_tablePosition.x) + 65;
+    // Find the console output position.
+    // To find the x position, first move the cursor 70 bytes in, then
+    // add the slot x position multiply by 7.
+    int outX = INDENT_X + (7 * m_tablePosition.x);
+
+    // To find the y position, first move the cursor 10 bytes down, then
+    // add the slot y position.
     int outY = DISPLAY_Y + m_tablePosition.y;
 
+    // Move the cursor to the correct position.
     std::cout << CSI << outY << ";" << outX << "H";
-    // draw the room
+    
+    // Draw the slot depending on what type it is.
     switch (m_type)
     {
     case EMPTY:
@@ -165,5 +306,4 @@ void Slot::drawSlots()
         std::cout << "| " << m_player[m_tablePosition.y].initials;
         break;
     }
-
 }

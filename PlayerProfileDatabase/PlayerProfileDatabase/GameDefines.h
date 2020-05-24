@@ -14,14 +14,13 @@ const char* const GREEN = "\x1b[92m";
 const char* const RESET_COLOR = "\x1b[0m";
 
 const int EMPTY = 0;
-const int POSITION = 1;
-const int SCORE = 2;
-const int INITIALS = 3;
+const int SCORE = 1;
+const int INITIALS = 2;
 
 const int DISPLAY_WIDTH = 2;
 const int DISPLAY_HEIGHT = 10;
 
-const int INDENT_X = 5;
+const int INDENT_X = 70;
 const int DISPLAY_Y = 10;
 const int COMMAND_INPUT_Y = 15;
 const int PLAYER_INPUT_X = 35;

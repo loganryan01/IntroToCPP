@@ -9,27 +9,25 @@ public:
 
 	void setPosition(Point2D position);
 	void setType(int type);
-	void setScore(int score, int choice);
-	void setInitials(char initials[4], int choice);
+	void setScore(int score, int playerNumber);
+	void setInitials(char initials[4], int playerNumber);
 
 	int getType();
-	int getScore(int slot);
-	char getInitial(int slot1, int slot2);
+	int getScore(int playerNumber);
+	char getInitial(int playerNumber, int initialsPosition);
 
-	bool initialsMatch(int y, char initials[4]);
 	int binarySearch(char initials[4]);
 	
-	void saveScore(int j);
-	void saveInitials(int j);
-	void loadInitials(int j);
-	void loadScore(int j);
+	void saveScore(int playerNumber);
+	void saveInitials(int playerNumber);
+	void loadInitials(int playerNumber);
+	void loadScore(int playerNumber);
 
 	void drawSlots();
 
 private:
 	Point2D m_tablePosition;
 	int m_type;
-	int m_arraySize;
 	Player* m_player;
 };
 

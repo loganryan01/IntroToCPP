@@ -32,14 +32,14 @@ private:
 	int getChoice();
 
 	bool correctInitials(char input[4]);
-	bool availableSpot();
+	bool availableRow();
 
 	void sort();
 
 private:
 	bool m_gameOver;
 	int m_score;
-	int m_playerArray;
+	int m_playerNumber;
 	char m_initials[4];
 	Slot m_table[DISPLAY_HEIGHT][DISPLAY_WIDTH];
 };

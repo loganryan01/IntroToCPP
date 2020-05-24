@@ -1,11 +1,31 @@
+/*-----------------------------------------------------------------------
+    File Name: Game.cpp
+    Purpose: Runs the game.
+    Author: Logan Ryan
+    Modified: 24 May 2020
+-------------------------------------------------------------------------
+    Copyright 2020 Logan Ryan.
+-----------------------------------------------------------------------*/
+
 #include "Game.h"
 #include <iostream>
 #include <windows.h>
 #include <cctype>
+#include <fstream>
 
+//---------------------------------------------------------------
+// Initialise all the variables in this class.
+//   m_gameOver: Is the game over?
+//               The default is false.
+//   m_score: The new score for the player.
+//            The default is 0.
+//   m_playerNumber: Which player are we adding or updating?
+//                   Values can range from 0-9. The default is 0.
+//   m_initials: The new name for the player.
+//---------------------------------------------------------------
 Game::Game() : m_gameOver{ false }, m_score{ 0 }
 {
-    m_playerArray = 0;
+    m_playerNumber = 0;
     strncpy_s(m_initials, "\0", 4);
 }
 
@@ -14,9 +34,12 @@ Game::~Game()
 
 }
 
+//--------------------------
+// Update the game overtime.
+//--------------------------
 void Game::update()
 {
-    char input[4];
+    char inputOldInitials[4];
     
     drawCommandList();
 
@@ -27,7 +50,7 @@ void Game::update()
     switch (choice)
     {
     case 1: // Add player info to table
-        if (availableSpot())
+        if (availableRow())
         {
             updateInitials();
             updateScore();
@@ -42,13 +65,13 @@ void Game::update()
         }
         
         break;
-    case 2: // Change player initials
+    case 2: // Change player name
         std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
         std::cout << CSI << "40X";
         std::cout << INDENT << "Input old initials: " << YELLOW;
-        std::cin >> input;
+        std::cin >> inputOldInitials;
         std::cout << RESET_COLOR;
-        if (correctInitials(input))
+        if (correctInitials(inputOldInitials))
         {
             updateInitials();
         }
@@ -66,9 +89,9 @@ void Game::update()
         std::cout << CSI << "40X";
         std::cout << INDENT << "Whose score do you want to change?" << std::endl;
         std::cout << INDENT << "Input old initials: " << YELLOW;
-        std::cin >> input;
+        std::cin >> inputOldInitials;
         std::cout << RESET_COLOR;
-        if (correctInitials(input))
+        if (correctInitials(inputOldInitials))
         {
             updateScore();
         }
@@ -81,7 +104,7 @@ void Game::update()
             std::cin.get();
         }
         break;
-    case 4: // Exit form database
+    case 4: // Exit from database
         std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
         std::cout << std::endl << INDENT << "Press 'Enter' to exit the program.";
         std::cin.clear();
@@ -93,12 +116,19 @@ void Game::update()
     }
 }
 
+//---------------
+// Draw the game.
+//---------------
 void Game::draw()
 {
     sort();
     drawTable();
 }
 
+//-----------------------------------------------------
+// Set up the game when it begins.
+//   return (bool): Return whether it succeeded or not.
+//-----------------------------------------------------
 bool Game::startup()
 {
     if (enableVirtualTerminal() == false)
@@ -118,11 +148,19 @@ bool Game::startup()
     return true;
 }
 
+//-------------------------------------------------
+// Check if the game is over
+//   return (bool): Return the game is over or not.
+//-------------------------------------------------
 bool Game::isGameOver()
 {
     return m_gameOver;
 }
 
+//-------------------------------------------------
+// Check if virtual terminal is set up
+//   return (bool): Return the game is over or not.
+//-------------------------------------------------
 bool Game::enableVirtualTerminal()
 {
     //Set output mode to handle virtual terminal sequences
@@ -146,15 +184,19 @@ bool Game::enableVirtualTerminal()
     return true;
 }
 
+//-------------------------------------------------
+// Setup the table to display player information.
+//-------------------------------------------------
 void Game::initializeTable()
 {
-    // fill the arrays with 0
+    // Go through the 2D array
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
         for (int x = 0; x < DISPLAY_WIDTH; x++)
         {
             if (x == 0)
             {
+                // Check if there is a name in the slot
                 if (m_table[y][0].getInitial(y, 0) != NULL)
                 {
                     m_table[y][0].setType(INITIALS);
@@ -166,6 +208,7 @@ void Game::initializeTable()
             }
             if (x == 1)
             {
+                // Check if there is a score in the slot
                 if (m_table[y][1].getScore(y) < NULL)
                 {
                     m_table[y][1].setType(EMPTY);
@@ -175,20 +218,49 @@ void Game::initializeTable()
                     m_table[y][1].setType(SCORE);
                 }
             }
+            // Move the slot to the correct position
             m_table[y][x].setPosition(Point2D{ x, y });
         }
     }
 }
 
+//--------------------------------------------------
+// Load the player information from the binary file.
+//--------------------------------------------------
 void Game::load()
 {
-    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    std::fstream file;
+
+    // Check if the file exists.
+    file.open("information.out");
+    if (file.is_open())
     {
-        m_table[y][0].loadInitials(y);
-        m_table[y][1].loadScore(y);
+        file.close();
+        // If it does exists load the information from it.
+        for (int y = 0; y < DISPLAY_HEIGHT; y++)
+        {
+            m_table[y][0].loadInitials(y);
+            m_table[y][1].loadScore(y);
+        }
     }
+    else
+    {
+        file.close();
+        file.open("information.out", std::ios::out | std::ios::binary);
+        file.close();
+        // If it doesn't exists create the file.
+        for (int y = 0; y < DISPLAY_HEIGHT; y++)
+        {
+            m_table[y][0].saveInitials(y);
+            m_table[y][1].saveScore(y);
+        }
+    }
+    
 }
 
+//----------------------------------
+// Welcome the user to the database.
+//----------------------------------
 void Game::drawWelcomeMessage()
 {
     std::cout << TITLE << MAGENTA << "Welcome to the player profile database!" << RESET_COLOR << std::endl;
@@ -196,17 +268,25 @@ void Game::drawWelcomeMessage()
     std::cout << INDENT << "It can be used for any game you wish." << std::endl << std::endl;
 }
 
+//-----------------------------------
+// Draw the player information table.
+//-----------------------------------
 void Game::drawTable()
 {
     Point2D position = { 0, 0 };
 
-    // reset draw colors
+    // Reset draw colors
     std::cout << RESET_COLOR;
-    std::cout << CSI << "9;70H" << CSI << "4m";;
+
+    // Move the cursor to the correct positions and draw the titles.
+    std::cout << CSI << "9;70H" << CSI << "4m";
     std::cout << "| Name | " << std::endl;
     std::cout << CSI << "9;79H";
     std::cout << "High-Score" << std::endl;
     std::cout << CSI << "24m";
+
+    // Go through all the slots and draw the information that is meant to
+    // be in those slots.
     for (position.y = 0; position.y < DISPLAY_HEIGHT; position.y++)
     {
         for (position.x = 0; position.x < DISPLAY_WIDTH; position.x++)
@@ -217,6 +297,9 @@ void Game::drawTable()
     }
 }
 
+//---------------------------------------------------------------------------
+// Draw the command list for the user to know what the possible commands are.
+//---------------------------------------------------------------------------
 void Game::drawCommandList()
 {
     std::cout << CSI << 9 << ";" << 1 << "H";
@@ -227,8 +310,12 @@ void Game::drawCommandList()
     std::cout << INDENT << "4. Exit from database" << std::endl;
 }
 
+//-----------------------
+// Hide the command list.
+//-----------------------
 void Game::hideCommandList()
 {
+    // Starting from line 9 clear all the writing on the screen
     for (int i = 9; i < 16; i++)
     {
         std::cout << CSI << i << ";" << 42 << "H";
@@ -236,26 +323,33 @@ void Game::hideCommandList()
     }
 }
 
-// maximum score is a 9 digit number
+//---------------------------------
+// Update the score for the player.
+//---------------------------------
 void Game::updateScore()
 {
+    // Clear the player input area.
     for (int i = 0; i < 2; i++)
     {
         std::cout << CSI << PLAYER_INPUT_Y + i << ";" << 0 << "H";
         std::cout << CSI << "40X";
     }
     
+    // Get the high-score from the user.
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-    std::cout << INDENT << "Enter High-Score: " << INDENT << YELLOW;
+    std::cout << INDENT << "Enter High-Score: " << INDENT << YELLOW << std::endl;
+    std::cout << INDENT << "Maximum 9 digit number.";
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
     std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H";
     std::cin >> m_score;
-    if (!std::cin.good())
+    if (!std::cin.good() || m_score > 999999999)
     {
+        // If the score is invalid, tell the user to try again.
         std::cout << RESET_COLOR;
-        std::cout << INDENT << "You have inputed an invalid score.";
+        std::cout << INDENT << "You have inputed an invalid score." << std::endl;
+        std::cout << INDENT << "Press 'Enter' to return to the main menu." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::cin.rdbuf()->in_avail());
         std::cin.get();
@@ -263,17 +357,24 @@ void Game::updateScore()
     }
     else
     {
-        m_table[m_playerArray][1].setType(SCORE);
-        m_table[m_playerArray][1].setScore(m_score, m_playerArray);
-        m_table[m_playerArray][1].saveScore(m_playerArray);
+        // Set the high score for the player.
+        m_table[m_playerNumber][1].setType(SCORE);
+        m_table[m_playerNumber][1].setScore(m_score, m_playerNumber);
+        m_table[m_playerNumber][1].saveScore(m_playerNumber);
     }
 }
 
+//---------------------------------
+// Update the name for the player.
+//---------------------------------
 void Game::updateInitials()
 {
+    // Clear the player input area.
     std::cout << RESET_COLOR;
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
     std::cout << CSI << "40X";
+
+    // Get the name from the user.
     std::cout << INDENT << "Enter initials of your name: " << INDENT << YELLOW;
 
     std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H";
@@ -281,85 +382,136 @@ void Game::updateInitials()
     std::cout << RESET_COLOR << std::endl;
     if (std::cin.fail() || !isalpha(m_initials[0]) || !isalpha(m_initials[1]) || !isalpha(m_initials[2]))
     {
+        // If the name is invalid, tell the user to try again.
         std::cout << INDENT << "You have inputed an invalid letter(s).";
+        std::cout << INDENT << "Press 'Enter' to return to the main menu." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::cin.rdbuf()->in_avail());
         std::cin.get();
     }
     else
     {
-        m_table[m_playerArray][0].setType(INITIALS);
-        m_table[m_playerArray][0].setInitials(m_initials, m_playerArray);
-        m_table[m_playerArray][0].saveInitials(m_playerArray);
+        // Set the name for the player.
+        m_table[m_playerNumber][0].setType(INITIALS);
+        m_table[m_playerNumber][0].setInitials(m_initials, m_playerNumber);
+        m_table[m_playerNumber][0].saveInitials(m_playerNumber);
     }
 }
 
+//---------------------------------------------------------------------
+// Get the choice of what command the user wants to do.
+//   Return (int): Return the command number that the user wants to do.
+//---------------------------------------------------------------------
 int Game::getChoice()
 {
-    int input = 0;
+    int choice = 0;
     
+    // Ask the user what they want to do.
     std::cout << CSI << COMMAND_INPUT_Y << ";" << 0 << "H";
     std::cout << CSI << "40X";
     std::cout << INDENT << "What do you want to do?";
+
+    // Get the choice from the user.
     std::cout << CSI << COMMAND_INPUT_Y << ";" << PLAYER_INPUT_X << "H" << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
-    std::cin >> input;
+    std::cin >> choice;
     std::cout << RESET_COLOR;
 
-    return input;
+    // Return that choice
+    return choice;
 }
 
+//-----------------------------------------------------------------------
+// Check that the initials are correct.
+//   inputOldInitials (char[4]): What were the old initials of the player 
+//                               name?
+//   Return (bool): Return whether the initials are correct or not.
+//-----------------------------------------------------------------------
 bool Game::correctInitials(char input[4])
 {
+    // Go through each of the name slots
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
+        // If the name is correct, set player number value to correct row
+        // number value.
         if (m_table[y][0].binarySearch(input) > -1)
         {
-            m_playerArray = y;
+            m_playerNumber = y;
             return true;
         }
     }
     return false;
 }
 
-bool Game::availableSpot()
+//----------------------------------------------------------------------
+// Check that there is an available row on the player information table.
+//   Return (bool): Return whether there is an available spot or not.
+//----------------------------------------------------------------------
+bool Game::availableRow()
 {
+    // Go through each of the name slots
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
+        // If there is no name in that slot, then there is no score to go 
+        // with it therefore the row is empty
         if (m_table[y][0].getType() == EMPTY)
         {
-            m_playerArray = y;
+            m_playerNumber = y;
             return true;
         }
     }
     return false;
 }
 
+//---------------------------------------------------
+// Sorts the player information table alphabetically.
+//---------------------------------------------------
 void Game::sort()
 {
     bool sorted = false;
+
     while (!sorted)
     {
+        // At first we assume that the table is sorted.
         sorted = true;
+
+        // Then we go through the name column.
         for (int i = 0; i < DISPLAY_HEIGHT - 1; i++)
         {
+            // If the ASCII value of the first initial of the currently 
+            // selected name is less than the ASCII value of the first 
+            // initial of the next name then the names will swap along
+            // with their respected score.
             if ((int)m_table[i + 1][0].getInitial(i + 1, 0) < (int)m_table[i][0].getInitial(i, 0) &&
                 m_table[i][1].getType() != EMPTY && m_table[i + 1][1].getType() != EMPTY)
             {
+                // Score of the currently selected player.
                 int temp1 = m_table[i][1].getScore(i);
+
+                // Score of the next player.
                 int temp2 = m_table[i + 1][1].getScore(i + 1);
+
+                // Name of the currently selected player.
                 char temp3[4] = { m_table[i][0].getInitial(i, 0),
                                   m_table[i][0].getInitial(i, 1),
                                   m_table[i][0].getInitial(i, 2) };
+
+                // Name of the next player.
                 char temp4[4] = { m_table[i + 1][0].getInitial(i + 1, 0),
                                   m_table[i + 1][0].getInitial(i + 1, 1),
                                   m_table[i + 1][0].getInitial(i + 1, 2) };
+
+                // Swap scores
                 m_table[i][1].setScore(temp2, i);
                 m_table[i + 1][1].setScore(temp1, i + 1);
+
+                // Swap names
                 m_table[i][0].setInitials(temp4, i);
                 m_table[i + 1][0].setInitials(temp3, i + 1);
+
+                // The table is not yet sorted and we must repeat the process.
                 sorted = false;
             }
         }

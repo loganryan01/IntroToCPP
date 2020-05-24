@@ -1,2 +1,13 @@
-﻿  Slot.cpp
-  PlayerProfileDatabase.vcxproj -> D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\Debug\PlayerProfileDatabase.exe
+﻿  Game.cpp
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(326,17): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(327,17): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(327,53): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(328,17): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(328,45): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(351,17): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(352,17): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(352,59): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(353,17): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(353,48): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(380,13): error C2065: 'm_playerArray': undeclared identifier
+D:\Windows\Assignments\Introduction to C++ Assignment\PlayerProfileDatabase\PlayerProfileDatabase\Game.cpp(393,13): error C2065: 'm_playerArray': undeclared identifier
