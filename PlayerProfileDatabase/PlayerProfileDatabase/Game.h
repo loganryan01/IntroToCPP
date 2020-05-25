@@ -36,6 +36,7 @@ private:
 
 	void sort();
 
+
 private:
 	bool m_gameOver;
 	int m_score;

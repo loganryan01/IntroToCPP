@@ -16,12 +16,13 @@ public:
 	int getScore(int playerNumber);
 	char getInitial(int playerNumber, int initialsPosition);
 
-	int binarySearch(char initials[4]);
+	int binarySearch(char initials[4], int arraySize);
 	
-	void saveScore(int playerNumber);
-	void saveInitials(int playerNumber);
+	void saveScore(int playerNumber, int binaryFilePosition);
+	void saveInitials(int playerNumber, int binaryFilePosition);
 	void loadInitials(int playerNumber);
 	void loadScore(int playerNumber);
+	int checkBinaryInitials(char oldInitials[4]);
 
 	void drawSlots();
 

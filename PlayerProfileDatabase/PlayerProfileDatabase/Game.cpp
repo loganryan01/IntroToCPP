@@ -2,7 +2,7 @@
     File Name: Game.cpp
     Purpose: Runs the game.
     Author: Logan Ryan
-    Modified: 24 May 2020
+    Modified: 25 May 2020
 -------------------------------------------------------------------------
     Copyright 2020 Logan Ryan.
 -----------------------------------------------------------------------*/
@@ -50,10 +50,13 @@ void Game::update()
     switch (choice)
     {
     case 1: // Add player info to table
+        // Check that there is a space in the table.
         if (availableRow())
         {
             updateInitials();
+            m_table[m_playerNumber][0].saveInitials(m_playerNumber, m_playerNumber);
             updateScore();
+            m_table[m_playerNumber][1].saveScore(m_playerNumber, m_playerNumber);
         }
         else
         {
@@ -73,8 +76,24 @@ void Game::update()
         std::cout << RESET_COLOR;
         if (correctInitials(inputOldInitials))
         {
-            load();
+            // Get the old initials position in the binary file
+            int binaryFilePosition = m_table[m_playerNumber][0].checkBinaryInitials(inputOldInitials);
+            // Get the new initials
             updateInitials();
+            // Place the new initials in the old initals position in the
+            // binary file
+            if (binaryFilePosition > -1)
+            {
+                m_table[m_playerNumber][0].saveInitials(m_playerNumber, binaryFilePosition);
+            }
+            else
+            {
+                std::cout << INDENT << "Unable to save." << std::endl;
+                std::cout << INDENT << "Press 'Enter' to continue.";
+                std::cin.clear();
+                std::cin.ignore(std::cin.rdbuf()->in_avail());
+                std::cin.get();
+            }
         }
         else
         {
@@ -94,8 +113,25 @@ void Game::update()
         std::cout << RESET_COLOR;
         if (correctInitials(inputOldInitials))
         {
-            load();
+            // Get the old score position in the binary file by getting
+            // the old initials position.
+            int binaryFilePosition = m_table[m_playerNumber][0].checkBinaryInitials(inputOldInitials);
+            // Get the new score
             updateScore();
+            // Place the new score in the old score position in the
+            // binary file
+            if (binaryFilePosition > -1)
+            {
+                m_table[m_playerNumber][1].saveScore(m_playerNumber, binaryFilePosition);
+            }
+            else
+            {
+                std::cout << INDENT << "Unable to save." << std::endl;
+                std::cout << INDENT << "Press 'Enter' to continue.";
+                std::cin.clear();
+                std::cin.ignore(std::cin.rdbuf()->in_avail());
+                std::cin.get();
+            }
         }
         else
         {
@@ -253,8 +289,8 @@ void Game::load()
         // If it doesn't exists create the file.
         for (int y = 0; y < DISPLAY_HEIGHT; y++)
         {
-            m_table[y][0].saveInitials(y);
-            m_table[y][1].saveScore(y);
+            m_table[y][0].saveInitials(y, y);
+            m_table[y][1].saveScore(y, y);
         }
     }
     
@@ -362,7 +398,6 @@ void Game::updateScore()
         // Set the high score for the player.
         m_table[m_playerNumber][1].setType(SCORE);
         m_table[m_playerNumber][1].setScore(m_score, m_playerNumber);
-        m_table[m_playerNumber][1].saveScore(m_playerNumber);
     }
 }
 
@@ -397,7 +432,6 @@ void Game::updateInitials()
         // Set the name for the player.
         m_table[m_playerNumber][0].setType(INITIALS);
         m_table[m_playerNumber][0].setInitials(m_initials, m_playerNumber);
-        m_table[m_playerNumber][0].saveInitials(m_playerNumber);
     }
 }
 
@@ -439,7 +473,7 @@ bool Game::correctInitials(char input[4])
     {
         // If the name is correct, set player number value to correct row
         // number value.
-        if (m_table[y][0].binarySearch(input) > -1)
+        if (m_table[y][0].binarySearch(input, y) > -1)
         {
             m_playerNumber = y;
             return true;

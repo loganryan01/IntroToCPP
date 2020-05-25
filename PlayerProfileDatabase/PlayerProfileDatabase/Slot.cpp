@@ -3,7 +3,7 @@
     Purpose: Draws the slots on the screen, saves the data to binary file
              and loads the data from the binary file.
     Author: Logan Ryan
-    Modified: 24 May 2020
+    Modified: 25 May 2020
 -------------------------------------------------------------------------
     Copyright 2020 Logan Ryan.
 -----------------------------------------------------------------------*/
@@ -116,10 +116,10 @@ char Slot::getInitial(int playerNumber, int initialsPosition)
 //   initials (char[4]): The name of the player we are searching for.
 //   return (int): Returns the position of the initials in the array.
 //-------------------------------------------------------------------
-int Slot::binarySearch(char initials[4])
+int Slot::binarySearch(char initials[4], int arraySize)
 {
     int startIndex = 0;
-    int endIndex = sizeof(m_player) - 1;
+    int endIndex = arraySize;
 
     // Loop while startIndex is less or equal to endIndex.
     while (startIndex <= endIndex)
@@ -139,9 +139,9 @@ int Slot::binarySearch(char initials[4])
         // values of the characters of the initials and change the
         // start and end indexes to shrink our search range for the next
         // iteration.
-        if (m_player[middleIndex].initials[0] < initials[0] || 
-            m_player[middleIndex].initials[1] < initials[1] || 
-            m_player[middleIndex].initials[2] < initials[2])
+        if (initials[0] < m_player[middleIndex].initials[0] ||
+            initials[1] < m_player[middleIndex].initials[1] ||
+            initials[2] < m_player[middleIndex].initials[2])
         {
             endIndex = middleIndex - 1;
         }
@@ -156,11 +156,13 @@ int Slot::binarySearch(char initials[4])
     return -1;
 }
 
-//-------------------------------------------------
+//--------------------------------------------------------------
 // Save the player score to binary file.
 //   playerNumber (int): Whose score are we saving?
-//-------------------------------------------------
-void Slot::saveScore(int playerNumber)
+//   binaryFilePosition (int): Where are we saving the initials?
+//   Valid values for bothe parameters is 0-9
+//--------------------------------------------------------------
+void Slot::saveScore(int playerNumber, int binaryFilePosition)
 {
     std::fstream file;
 
@@ -172,8 +174,8 @@ void Slot::saveScore(int playerNumber)
     {
         // Move the write marker to the correct byte in the file by
         // starting from the beginning of the file then multiplying 
-        // the size of the Slot class by the playerNumber and add 8.
-        file.seekp(sizeof(Slot) * playerNumber + 8, std::ios::beg);
+        // the size of the Slot class by the binaryFilePosition and add 8.
+        file.seekp(sizeof(Slot) * binaryFilePosition + 8, std::ios::beg);
 
         // Write the players score.
         file.write((char*)&m_player[playerNumber].score, sizeof(int));
@@ -183,11 +185,13 @@ void Slot::saveScore(int playerNumber)
     }
 }
 
-//----------------------------------------------------
+//--------------------------------------------------------------
 // Save the player name to binary file.
 //   playerNumber (int): Whose initials are we saving?
-//----------------------------------------------------
-void Slot::saveInitials(int playerNumber)
+//   binaryFilePosition (int): Where are we saving the initials?
+//   Valid values for bothe parameters is 0-9
+//--------------------------------------------------------------
+void Slot::saveInitials(int playerNumber, int binaryFilePosition)
 {
     std::fstream file;
 
@@ -199,8 +203,8 @@ void Slot::saveInitials(int playerNumber)
     {
         // Move the write marker to the correct byte in the file by
         // starting from the beginning of the file then multiplying 
-        // the size of the Slot class by the playerNumber.
-        file.seekp(sizeof(Slot) * playerNumber, std::ios::beg);
+        // the size of the Slot class by the binaryFilePosition.
+        file.seekp(sizeof(Slot) * binaryFilePosition, std::ios::beg);
 
         // Write the players name.
         file.write((char*)&m_player[playerNumber].initials, sizeof(Player));
@@ -213,6 +217,7 @@ void Slot::saveInitials(int playerNumber)
 //----------------------------------------------------------------
 // Load the player name from the binary file.
 //   playerNumber (int): Where is the initials going in the array?
+//   Valid values is 0-9
 //----------------------------------------------------------------
 void Slot::loadInitials(int playerNumber)
 {
@@ -247,6 +252,7 @@ void Slot::loadInitials(int playerNumber)
 //-------------------------------------------------------------
 // Load the player score from the binary file.
 //   playerNumber (int): Where is the score going in the array?
+//   Valid values is 0-9
 //-------------------------------------------------------------
 void Slot::loadScore(int playerNumber)
 {
@@ -274,6 +280,55 @@ void Slot::loadScore(int playerNumber)
         // Close the file when the operation is done.
         file.close();
     }
+}
+
+//------------------------------------------------------------------------
+// Check the initials in the binary file.
+//   oldInitals (char[4]): The name that the program is looking for in the
+//                         binary file.
+//   return (bool): Return if the name is found or not.
+//------------------------------------------------------------------------
+int Slot::checkBinaryInitials(char oldInitials[4])
+{
+    std::fstream file;
+
+    // Open the file ready to read.
+    file.open("information.out", std::ios::in | std::ios::binary);
+
+    // Check that the file is open.
+    if (file.is_open())
+    {
+        Player tempPlayer;
+
+        // Read through the whole file
+        for (int y = 0; y < 9; y++)
+        {
+            // Move the read marker to the correct byte in the file by
+            // starting from the beginning of the file then multiplying 
+            // the size of the Slot class by the playerNumber.
+            file.seekg(y * sizeof(Slot), std::ios::beg);
+
+            // Read the player name
+            file.read((char*)&tempPlayer, sizeof(Player));
+
+            // If the old name match any of the names in the binary file
+            // write over it.
+            if (tempPlayer.initials[0] == oldInitials[0] &&
+                tempPlayer.initials[1] == oldInitials[1] &&
+                tempPlayer.initials[2] == oldInitials[2])
+            {
+                // Close the file and tell the user that there is a name in
+                // the file.
+                file.close();
+                return y;
+            }
+        }
+
+        // Close the file when the operation is done and tell the user that
+        // the name does not exist.
+        file.close();
+    }
+    return -1;
 }
 
 //----------------
