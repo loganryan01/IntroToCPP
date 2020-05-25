@@ -73,6 +73,7 @@ void Game::update()
         std::cout << RESET_COLOR;
         if (correctInitials(inputOldInitials))
         {
+            load();
             updateInitials();
         }
         else
@@ -93,6 +94,7 @@ void Game::update()
         std::cout << RESET_COLOR;
         if (correctInitials(inputOldInitials))
         {
+            load();
             updateScore();
         }
         else
@@ -303,11 +305,11 @@ void Game::drawTable()
 void Game::drawCommandList()
 {
     std::cout << CSI << 9 << ";" << 1 << "H";
-    std::cout << INDENT << "--------------Commands--------------" << std::endl;
-    std::cout << INDENT << "1. Add new player" << std::endl;
-    std::cout << INDENT << "2. Update player name" << std::endl;
-    std::cout << INDENT << "3. Update player score" << std::endl;
-    std::cout << INDENT << "4. Exit from database" << std::endl;
+    std::cout << INDENT << "--------------Commands----------------" << std::endl;
+    std::cout << INDENT << "1. Add new player                     " << std::endl;
+    std::cout << INDENT << "2. Update player name                 " << std::endl;
+    std::cout << INDENT << "3. Update player score                " << std::endl;
+    std::cout << INDENT << "4. Exit from database                 " << std::endl;
 }
 
 //-----------------------
@@ -337,8 +339,8 @@ void Game::updateScore()
     
     // Get the high-score from the user.
     std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-    std::cout << INDENT << "Enter High-Score: " << INDENT << YELLOW << std::endl;
-    std::cout << INDENT << "Maximum 9 digit number.";
+    std::cout << INDENT << "Enter High-Score: " << INDENT << std::endl;
+    std::cout << INDENT << "Maximum 9 digit number." << YELLOW;
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
@@ -375,7 +377,8 @@ void Game::updateInitials()
     std::cout << CSI << "40X";
 
     // Get the name from the user.
-    std::cout << INDENT << "Enter initials of your name: " << INDENT << YELLOW;
+    std::cout << INDENT << "Enter initials of your name: " << INDENT << std::endl;
+    std::cout << INDENT << "Maximum 3 letters." << YELLOW;
 
     std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H";
     std::cin >> m_initials;
