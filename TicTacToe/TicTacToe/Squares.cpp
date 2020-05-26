@@ -1,10 +1,23 @@
+/*--------------------------------------
+	File Name: Squares.cpp
+	Purpose: Draws sqaure on the screen.
+	Author: Logan Ryan
+	Modified: 26 May 2020
+----------------------------------------
+	Copyright 2020 Logan Ryan.
+--------------------------------------*/
+
 #include "Squares.h"
 #include "GameDefines.h"
 #include <iostream>
 
 using namespace std;
 
-// This sets the square to empty so when the game starts the grid is empty
+//--------------------------------------------------------------------- 
+// Initialise the variables in the class.
+//	 m_type (int): This stores the number of what type of square it is.
+//   m_gridPosition (Point2D): This stores the position of the square.
+//--------------------------------------------------------------------- 
 Squares::Squares() : m_type(EMPTY), m_gridPosition(Point2D{ 0, 0 })
 {
 }
@@ -14,48 +27,51 @@ Squares::~Squares()
 
 }
 
-// This function changes the position of the square 
-// by acquiring a new position through the Point2D struct
+//-------------------------------------------------
+// Changes the position of the square.
+//   position (Point2D): Where is the square going?
+//-------------------------------------------------
 void Squares::setPosition(Point2D position)
 {
-	// We need to set the squares to different positions 
-	// so it looks like a grid rather than just one square
 	m_gridPosition = position; 
 }
 
-// This function changes the type of square it is 
-// by taking the integer of the type of square it is
+//-----------------------------------------------------
+// Changes the type of symbol is in the square.
+//   type (int): What type of square is it going to be?
+//-----------------------------------------------------
 void Squares::setType(int type)
 {
-	// The must require a type so the correct image can be drawn
 	m_type = type;
 }
 
-// This function gets the type of square it is
-// by returning the integer of the type of room it is
+//-------------------------------------------------------------
+// Gets the type of symbol is in the square.
+//   return (int): Returns the type of symbol is in the square.
+//-------------------------------------------------------------
 int Squares::getType()
 {
-	// This gets the type so the game can know what type of square it is
-	// and do the correct action
 	return m_type;
 }
 
-// This function draws the square depending on what type it is
+//-----------------------------------------------
+// Draws the square depending on what type it is.
+//-----------------------------------------------
 void Squares::draw()
 {
-	// It draws the square by checking what type of square it is
+	// Check what type of information is in the square.
 	switch (m_type)
 	{
 	case EMPTY:
-		// The players haven't chosen the square to place their token so it's empty
+		// If it's empty then draw an empty square.
 		cout << "[   ]"; 
 		break;
 	case KNOT:
-		// Knot player has chosen this square to be a knot
+		// If the knot player chose this square to be a knot then draw a knot.
 		cout << "[ " << BLUE << "O" << RESET_COLOR << " ]"; 
 		break;
 	case CROSS:
-		// Cross player has chosen this square to be cross
+		// If the cross player chose this square to be a knot then draw a cross.
 		cout << "[ " << RED << "X" << RESET_COLOR << " ]"; 
 		break;
 	}

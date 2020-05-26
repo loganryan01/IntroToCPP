@@ -1,3 +1,12 @@
+/*--------------------------------------
+    File Name: Game.cpp
+    Purpose: Run the game.
+    Author: Logan Ryan
+    Modified: 26 May 2020
+----------------------------------------
+    Copyright 2020 Logan Ryan.
+--------------------------------------*/
+
 #include "Game.h"
 #include <iostream>
 #include <Windows.h>
@@ -5,7 +14,12 @@
 
 using namespace std;
 
-// This constructor initialises the variables for this class
+//---------------------------------------------------------
+// Initialise the variables in the class.
+//	 m_gameOver (bool): Is the game over?
+//   m_player1Turn (bool): Is it player 1's (Knots) turn?
+//   m_player2Turn (bool): Is it player 2's (Crosses) turn?
+//--------------------------------------------------------- 
 Game::Game() : m_gameOver{ false }, m_player1Turn{ true }, m_player2Turn{ false }
 {
 }
@@ -14,21 +28,26 @@ Game::~Game()
 {
 }
 
-// This function sets up the game by setting up the grid
+//-----------------------------------------
+// Sets up the game by setting up the grid.
+//-----------------------------------------
 void Game::startup()
 {
     initializeGrid();
 }
 
-// This function checks if the game is over by checking if the bollean 
-// variable is set to true
+//----------------------------------------------------------
+// Checks if the game is over.
+//   return (bool): Returns whether the game is over or not.
+//----------------------------------------------------------
 bool Game::isGameOver()
 {
 	return m_gameOver;
 }
 
-// The following lines tell the player what game they are playing and how 
-// to play it
+//------------------------------------
+// Welcome the players to tic tac toe.
+//------------------------------------
 void Game::drawWelcomeMessage()
 {
 	// Print title of game
@@ -39,62 +58,71 @@ void Game::drawWelcomeMessage()
 	cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
 }
 
-// This function sets up the grid by placing the squares into the correct 
-// position
+//------------------
+// Sets up the grid.
+//------------------
 void Game::initializeGrid()
 {
+    // Go through each of the squares in the grid.
     for (int y = 0; y < GRID_HEIGHT; y++)
     {
         for (int x = 0; x < GRID_WIDTH; x++)
         {
+            // Set the squares to their respected positions.
             m_grid[y][x].setPosition(Point2D{ x, y });
         }
     }
 }
 
-// This function draws the grid by going through the squares and drawing 
-// them based on what type of squares they are.
+//----------------
+// Draws the grid.
+//----------------
 void Game::drawGrid()
 {
     Point2D position = { 0, 0 };
 
-    // This shows the column numbers for the players to make decision of
-    // which column they want to place their token
+    // Print the column numbers.
     cout << INDENT << "    1" << "    2" << "    3" << endl;
+
+    // Go through the rows
     for (position.y = 1; position.y < GRID_HEIGHT; position.y++)
     {
+        // Move to the correct position.
         cout << INDENT;
-        // This shows the row numbers for the players to make decision of
-        // which column they want to place their token
         cout << position.y << " ";
+
+        // Go through the columns
         for (position.x = 1; position.x < GRID_WIDTH; position.x++)
         {
+            // Draw what is meant to be in the squares based on their types.
             m_grid[position.y][position.x].draw();
         }
         cout << endl;
     }
 }
 
-// This function gets the command from the players by getting the integer
-// that the players inputed.
+//------------------------------------------------------------------------
+// Gets the square from the players.
+//   return (int): Returns the square that the player wants to place their 
+//                 token. 
+//------------------------------------------------------------------------
 int Game::getCommand()
 {
     int command;
 
-    // This moves the cursor to correct position so the instructions for  
-    // the players can be displayed
+    // Move the cursor to correct position.
     cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
 
+    // Display instructions.
     cout << INDENT << "Insert the number row and column you want to place your token:";
 
-    // This moves the cursor to correct position so the input doesn't 
-    // overwrite the grid, the messages if there is an error or the 
-    // instructions
+    // Move the cursor to correct position.
     cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H";
 
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
+    // Get command
     cout << YELLOW;
     std::cin >> command;
     cout << RESET_COLOR;
@@ -102,11 +130,14 @@ int Game::getCommand()
     return command;
 }
 
-// This function executes the command
+//----------------------------------
+// Checks that the command is valid.
+//----------------------------------
 void Game::executeCommand()
 {
     int square = getCommand();
 
+    // Check that the square is valid
     switch (square)
     {
     case 11:
@@ -137,9 +168,9 @@ void Game::executeCommand()
         updateSquare(3, 3);
         break;
     default:
-        // If the players don't input a correct command it will then start
-        // again
-        cout << INDENT << "Invalid Command." << endl;
+        // If the players don't input a correct square it will then start
+        // again.
+        cout << INDENT << "Invalid Choice." << endl;
     }
     cout << INDENT << "Press 'Enter' to continue.";
     std::cin.clear();
@@ -147,18 +178,22 @@ void Game::executeCommand()
     std::cin.get();
 }
 
-// This function updates the squares
+//-----------------------------------------------
+// Updates the squares
+//   row (int): Which row is the square in?
+//   column (int): Which column is the square in?
+//-----------------------------------------------
 void Game::updateSquare(int row, int column)
 {
-    // First it checks if that square is empty
+    // Checks if that square is empty.
     if (m_grid[row][column].getType() == EMPTY)
     {
-        // Then, depending on whose turn it is, set the type of square 
-        // to that player's token.
+        // Depending on whose turn it is, set the type of square to that 
+        // player's token.
         if (m_player1Turn)
         {
             m_grid[row][column].setType(KNOT);
-            // It then switches to the next player
+            // Switch to the next player.
             m_player1Turn = false;
             m_player2Turn = true;
         }
@@ -168,41 +203,49 @@ void Game::updateSquare(int row, int column)
             m_player2Turn = false;
             m_player1Turn = true;
         }
-        // The grid will be updated with that decision
+        // The grid will be updated with that decision.
         draw();
         cout << CSI << 10 << ";" << 0 << "H";
         cout << INDENT << "Good choice!" << endl;
     }
     else
     {
-        // This will let the player know why they cannot place their 
-        // token there
+        // Let the player know why they cannot place their token there.
         cout << INDENT << "This square is already filled! Please choose another!" << endl;
     }
 }
 
-// This function tells the users whose turn it is
+//----------------------------------
+// Tells the users whose turn it is.
+//----------------------------------
 void Game::playerTurn()
 {
+    // Move the cursor to the correct position.
     cout << CSI << 10 << ";" << 0 << "H";
+
+    // If it's player 1's turn.
     if (m_player1Turn)
     {
         cout << INDENT << "It's 'O' turn!" << endl;
     }
-    else if (m_player2Turn)
+    else if (m_player2Turn) // If it's player 2's turn.
     {
         cout << INDENT << "It's 'X' turn!" << endl;
     }
     executeCommand();
+
+    // Clear the input area.
     cout << CSI << 9 << ";" << 0 << "H";
     cout << CSI << "0J";
 }
 
-// This function checks if player 1 wins
+//------------------------
+// Check if player 1 wins.
+//------------------------
 void Game::player1Wins()
 {
-    // The game goes through the grid to check if the knots form a 
-    // horizontal, vertical or diagonal line
+    // Go through the grid to check if the knots form a horizontal, vertical
+    // or diagonal line.
     if (m_grid[1][1].getType() == KNOT && m_grid[1][2].getType() == KNOT && m_grid[1][3].getType() == KNOT ||
         m_grid[2][1].getType() == KNOT && m_grid[2][2].getType() == KNOT && m_grid[2][3].getType() == KNOT ||
         m_grid[3][1].getType() == KNOT && m_grid[3][2].getType() == KNOT && m_grid[3][3].getType() == KNOT ||
@@ -212,7 +255,7 @@ void Game::player1Wins()
         m_grid[2][1].getType() == KNOT && m_grid[2][2].getType() == KNOT && m_grid[3][2].getType() == KNOT ||
         m_grid[3][1].getType() == KNOT && m_grid[3][2].getType() == KNOT && m_grid[3][3].getType() == KNOT)
     {
-        // If it is true, then the game is over and player 1 wins
+        // If it is true, then the game is over and player 1 wins.
         m_gameOver = true;
         cout << CSI << 10 << ";" << 0 << "H";
         cout << CSI << "0J";
@@ -224,11 +267,13 @@ void Game::player1Wins()
     }
 }
 
-// This function checks if player 2 wins
+//------------------------
+// Check if player 2 wins.
+//------------------------
 void Game::player2Wins()
 {
-    // The game goes through the grid to check if the crosses form a 
-    // horizontal, vertical or diagonal line
+    // Go through the grid to check if the crosses form a horizontal, 
+    // vertical or diagonal line
     if (m_grid[1][1].getType() == CROSS && m_grid[1][2].getType() == CROSS && m_grid[1][3].getType() == CROSS ||
         m_grid[2][1].getType() == CROSS && m_grid[2][2].getType() == CROSS && m_grid[2][3].getType() == CROSS ||
         m_grid[3][1].getType() == CROSS && m_grid[3][2].getType() == CROSS && m_grid[3][3].getType() == CROSS ||
@@ -250,14 +295,17 @@ void Game::player2Wins()
     }
 }
 
-// This function checks if the grid is full
+//----------------------------
+// Checks if the grid is full.
+//----------------------------
 void Game::playersTie()
 {
+    // Go through the grid to check if the grid is full.
     if (m_grid[1][1].getType() != EMPTY && m_grid[1][2].getType() != EMPTY && m_grid[1][3].getType() != EMPTY &&
         m_grid[2][1].getType() != EMPTY && m_grid[2][2].getType() != EMPTY && m_grid[2][3].getType() != EMPTY &&
         m_grid[3][1].getType() != EMPTY && m_grid[3][2].getType() != EMPTY && m_grid[3][3].getType() != EMPTY)
     {
-        // If the gird is full the game is over and nobody wins
+        // If the gird is full the game is over and nobody wins.
         m_gameOver = true;
         cout << CSI << 10 << ";" << 0 << "H";
         cout << CSI << "0J";
@@ -269,7 +317,9 @@ void Game::playersTie()
     }
 }
 
-// This function constantly updates the game
+//-----------------
+// Update the game.
+//-----------------
 void Game::update()
 {
     playerTurn();
@@ -278,9 +328,12 @@ void Game::update()
     playersTie();
 }
 
-// This function draws the game
+//---------------
+// Draw the game.
+//---------------
 void Game::draw()
 {
+    // Clear the screen.
     system("cls");
     drawWelcomeMessage();
     drawGrid();
