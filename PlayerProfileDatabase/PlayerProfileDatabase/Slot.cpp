@@ -355,10 +355,10 @@ void Slot::drawSlots()
         std::cout << "|";
         break;
     case SCORE:
-        std::cout << "| " << m_player[m_tablePosition.y].score;
+        std::cout << "| " << m_player[m_tablePosition.y].score << "         ";
         break;
     case INITIALS:
-        std::cout << "| " << m_player[m_tablePosition.y].initials;
+        std::cout << "| " << m_player[m_tablePosition.y].initials << "         ";
         break;
     }
 }

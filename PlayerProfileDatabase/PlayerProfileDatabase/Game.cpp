@@ -356,7 +356,7 @@ void Game::hideCommandList()
     // Starting from line 9 clear all the writing on the screen
     for (int i = 9; i < 16; i++)
     {
-        std::cout << CSI << i << ";" << 42 << "H";
+        std::cout << CSI << i << ";" << 43 << "H";
         std::cout << CSI << "1K";
     }
 }
