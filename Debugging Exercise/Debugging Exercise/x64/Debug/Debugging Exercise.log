@@ -1,4 +1,8 @@
-﻿  Mutalisk.cpp
+﻿  Main.cpp
+  Marine.cpp
+  Mutalisk.cpp
   Valkyrie.cpp
+  Zergling.cpp
+D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\Debugging Exercise\Zergling.cpp(19,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Generating Code...
   Debugging Exercise.vcxproj -> D:\Windows\Assignments\Introduction to C++ Assignment\Debugging Exercise\x64\Debug\Debugging Exercise.exe

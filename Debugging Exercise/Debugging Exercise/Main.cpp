@@ -1,17 +1,11 @@
-// A Debugging Exercise by Marc Chee (marcc@aie.edu.au)
-// 18/12/2016
-
-// Marines are trying to "de-bug" an area (haha . . . haha)
-// However something's up with this code . . . figure out what's going wrong
-// When you're finished, there should be no compiler errors or warnings
-// The encounter should also run and finish correctly as per the rules in the comments
-
-// In many cases there are differences between what's in otherwise identical sections
-// for Marines and Zerglings. It's good to be able to tell what the differences are
-// and why they might be important.
-
-// What's efficient and inefficient? Why?
-// What uses more memory and what doesn't? Why?
+/*---------------------------
+	File Name: Main.cpp
+	Purpose: Run game.
+	Author: Logan Ryan
+	Modified: 26 May 2020
+-----------------------------
+	Copyright 2020 Logan Ryan
+---------------------------*/
 
 #include <iostream>
 #include <vector>
@@ -44,6 +38,9 @@ void zerglingTurn();
 void mutaliskTurn();
 void valkyrieTurn();
 
+//------------------------
+// The main game function.
+//------------------------
 int main()
 {
 	bool fSuccess = EnableVTMode();
@@ -59,6 +56,9 @@ int main()
 	return 0;
 }
 
+//--------------------------------------
+// Enabling Virtual Terminal Processing.
+//--------------------------------------
 bool EnableVTMode()
 {
 	// Set output mode to handle virtual terminal sequences
@@ -82,16 +82,18 @@ bool EnableVTMode()
 	return true;
 }
 
-// Set up the Squad and the Swarm at their initial sizes listed below
+//--------------------------------
+// Set up the Squad and the Swarm.
+//--------------------------------
 void startup()
 {
-	// Enter the size of the squads
+	// The size of the squads.
 	int squadSize = 12;
 	int swarmSize = 12;
 	int fleetSize = 6;
 	int airSwarmSize = 6;
 
-	// Create the marine squad 
+	// Create the marine squad.
 	Marine m;
 	for (size_t i = 0; i < squadSize; i++)
 	{
@@ -120,7 +122,9 @@ void startup()
 	}
 }
 
-// This will be the battle between the marines and the zerglings
+//--------------------------------------------------
+// The battle between the marines and the zerglings.
+//--------------------------------------------------
 void groundBattle()
 {
 	cout << CSI << "1;0H";
@@ -152,7 +156,9 @@ void groundBattle()
 	}
 }
 
-// This is the battle between the valkyries and the mutalisks
+//----------------------------------------------------
+// The battle between the valkyries and the mutalisks.
+//----------------------------------------------------
 void airBattle()
 {
 	cout << CSI << "1;0H";
@@ -164,7 +170,7 @@ void airBattle()
 		mutaliskTurn();
 	}
 
-	// Once one team is completely eliminated, the fight ends and one team wins
+	// Once one team is completely eliminated, the fight ends and one team wins.
 	cout << "The fight in the air is over. ";
 	if (valkyrieAlive())
 	{
@@ -176,47 +182,65 @@ void airBattle()
 	}
 }
 
+//-------------------------
 // Is there a Marine Alive?
+//-------------------------
 bool marineAlive()
 {
+	// Check the marine squad.
 	if (squad.size() > 0)
 	{
+		// If the squad contains at least one marine, then there is a marine alive.
 		return true;
 	}
 	return false;
 }
 
+//---------------------------
 // Is there a Zergling Alive?
+//---------------------------
 bool zerglingAlive()
 {
+	// Check the zergling swarm.
 	if (swarm.size() > 0)
 	{
+		// If the swarm contains at least one zergling, then there is a zergling alive.
 		return true;
 	}
 	return false;
 }
 
+//---------------------------
 // Is there a Mutalisk Alive?
+//---------------------------
 bool mutaliskAlive()
 {
+	// Check the mutalisk swarm.
 	if (airSwarm.size() > 0)
 	{
+		// If the swarm contains at least one mutalisk, then there is a mutalisk alive.
 		return true;
 	}
 	return false;
 }
 
+//---------------------------
 // Is there a Valkyrie Alive?
+//---------------------------
 bool valkyrieAlive()
 {
+	// Check the valkyrie fleet.
 	if (fleet.size() > 0)
 	{
+		// If the fleet contains at least one valkyrie, then there is a valkyrie alive.
 		return true;
 	}
 	return false;
 }
 
-// It's the Marines turn
+//-----------------------
+// It's the Marines turn.
+//-----------------------
 void marineTurn()
 {
 	if (marineAlive()) // if there's at least one marine alive
@@ -245,7 +269,9 @@ void marineTurn()
 	}
 }
 
-// It's the Zerglings turn
+//-------------------------
+// It's the Zerglings turn.
+//-------------------------
 void zerglingTurn()
 {
 	if (zerglingAlive()) // if there's at least one zergling alive
@@ -274,7 +300,9 @@ void zerglingTurn()
 	}
 }
 
-// It's the Mutalisk turn
+//------------------------
+// It's the Mutalisk turn.
+//------------------------
 void mutaliskTurn()
 {
 	if (mutaliskAlive()) // if there's at least one mutalisk alive
@@ -303,7 +331,9 @@ void mutaliskTurn()
 	}
 }
 
-// It's the Valkyrie turn
+//------------------------
+// It's the Valkyrie turn.
+//------------------------
 void valkyrieTurn()
 {
 	if (valkyrieAlive()) // if there's at least one valkyrie alive
@@ -331,3 +361,18 @@ void valkyrieTurn()
 		cout << CSI << "0J";
 	}
 }
+
+// A Debugging Exercise by Marc Chee (marcc@aie.edu.au)
+// 18/12/2016
+
+// Marines are trying to "de-bug" an area (haha . . . haha)
+// However something's up with this code . . . figure out what's going wrong
+// When you're finished, there should be no compiler errors or warnings
+// The encounter should also run and finish correctly as per the rules in the comments
+
+// In many cases there are differences between what's in otherwise identical sections
+// for Marines and Zerglings. It's good to be able to tell what the differences are
+// and why they might be important.
+
+// What's efficient and inefficient? Why?
+// What uses more memory and what doesn't? Why?
