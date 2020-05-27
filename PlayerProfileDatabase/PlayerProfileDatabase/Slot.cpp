@@ -352,13 +352,13 @@ void Slot::drawSlots()
     switch (m_type)
     {
     case EMPTY:
-        std::cout << "|";
+        std::cout << GREEN << "|" << WHITE;
         break;
     case SCORE:
-        std::cout << "| " << m_player[m_tablePosition.y].score << "         ";
+        std::cout << GREEN << "| " << WHITE << m_player[m_tablePosition.y].score << "         ";
         break;
     case INITIALS:
-        std::cout << "| " << m_player[m_tablePosition.y].initials << "         ";
+        std::cout << GREEN << "| " << WHITE << m_player[m_tablePosition.y].initials << "         ";
         break;
     }
 }

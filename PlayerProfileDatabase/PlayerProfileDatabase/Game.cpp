@@ -151,6 +151,13 @@ void Game::update()
         std::cout << CSI << PLAYER_INPUT_Y + 10 << ";" << 0 << "H";
         exit(0);
         break;
+    default:
+        std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+        std::cout << INDENT << "Invalid Choice" << std::endl;
+        std::cout << INDENT << "Press 'Enter' to continue.";
+        std::cin.clear();
+        std::cin.ignore(std::cin.rdbuf()->in_avail());
+        std::cin.get();
     }
 }
 
@@ -318,10 +325,10 @@ void Game::drawTable()
 
     // Move the cursor to the correct positions and draw the titles.
     std::cout << CSI << "9;70H" << CSI << "4m";
-    std::cout << "| Name | " << std::endl;
-    std::cout << CSI << "9;79H";
-    std::cout << "High-Score" << std::endl;
-    std::cout << CSI << "24m";
+    std::cout << GREEN << "|" << RED << " Name " << GREEN << "|" << std::endl;
+    std::cout << CSI << "9;78H";
+    std::cout << BLUE << " High-Score" << std::endl;
+    std::cout << CSI << "24m" << RESET_COLOR;
 
     // Go through all the slots and draw the information that is meant to
     // be in those slots.
@@ -342,10 +349,10 @@ void Game::drawCommandList()
 {
     std::cout << CSI << 9 << ";" << 1 << "H";
     std::cout << INDENT << "--------------Commands----------------" << std::endl;
-    std::cout << INDENT << "1. Add new player                     " << std::endl;
-    std::cout << INDENT << "2. Update player name                 " << std::endl;
-    std::cout << INDENT << "3. Update player score                " << std::endl;
-    std::cout << INDENT << "4. Exit from database                 " << std::endl;
+    std::cout << INDENT << "1 = Add new player                     " << std::endl;
+    std::cout << INDENT << "2 = Update player name                 " << std::endl;
+    std::cout << INDENT << "3 = Update player score                " << std::endl;
+    std::cout << INDENT << "4 = Exit from database                 " << std::endl;
 }
 
 //-----------------------

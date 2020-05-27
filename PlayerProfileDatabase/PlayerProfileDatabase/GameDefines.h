@@ -9,13 +9,25 @@ const char* const TITLE = "\x1b[5;20H";
 // Move 5 spaces along the X position.
 const char* const INDENT = "\x1b[5C";
 
+// Change the text colour to red.
+const char* const RED = "\x1b[91m";
+
+// Change the text colour to green.
+const char* const GREEN = "\x1b[92m";
+
 // Change the text colour to yellow.
 const char* const YELLOW = "\x1b[93m";
+
+// Change the text colour to red.
+const char* const BLUE = "\x1b[94m";
 
 // Change the text colour to magenta.
 const char* const MAGENTA = "\x1b[95m";
 
 // Change the text colour to white.
+const char* const WHITE = "\x1b[97m";
+
+// Return all text to their default state.
 const char* const RESET_COLOR = "\x1b[0m";
 
 // The slot is empty.
