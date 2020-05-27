@@ -89,6 +89,8 @@ void Game::drawGrid()
     {
         // Move to the correct position.
         cout << INDENT;
+
+        // Print the row number.
         cout << position.y << " ";
 
         // Go through the columns
@@ -305,7 +307,7 @@ void Game::playersTie()
         m_grid[2][1].getType() != EMPTY && m_grid[2][2].getType() != EMPTY && m_grid[2][3].getType() != EMPTY &&
         m_grid[3][1].getType() != EMPTY && m_grid[3][2].getType() != EMPTY && m_grid[3][3].getType() != EMPTY)
     {
-        // If the gird is full the game is over and nobody wins.
+        // If the grid is full the game is over and nobody wins.
         m_gameOver = true;
         cout << CSI << 10 << ";" << 0 << "H";
         cout << CSI << "0J";
