@@ -11,6 +11,7 @@ Entity::~Entity()
 {
 }
 
+// Default attack number is 10
 int Entity::attack()
 {
 	return 10;
