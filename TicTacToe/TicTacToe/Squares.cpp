@@ -11,8 +11,6 @@
 #include "GameDefines.h"
 #include <iostream>
 
-using namespace std;
-
 //--------------------------------------------------------------------- 
 // Initialise the variables in the class.
 //	 m_type (int): This stores the number of what type of square it is.
@@ -64,15 +62,15 @@ void Squares::draw()
 	{
 	case EMPTY:
 		// If it's empty then draw an empty square.
-		cout << "[   ]"; 
+		std::cout << "[   ]";
 		break;
 	case KNOT:
 		// If the knot player chose this square to be a knot then draw a knot.
-		cout << "[ " << BLUE << "O" << RESET_COLOR << " ]"; 
+		std::cout << "[ " << BLUE << "O" << RESET_COLOR << " ]";
 		break;
 	case CROSS:
 		// If the cross player chose this square to be a knot then draw a cross.
-		cout << "[ " << RED << "X" << RESET_COLOR << " ]"; 
+		std::cout << "[ " << RED << "X" << RESET_COLOR << " ]";
 		break;
 	}
 }

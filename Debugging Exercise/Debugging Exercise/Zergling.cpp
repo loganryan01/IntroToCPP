@@ -16,7 +16,7 @@
 Zergling::Zergling()
 {
 	health = 40;
-	srand(time(0));
+	srand((unsigned)time(0));
 }
 
 Zergling::~Zergling()

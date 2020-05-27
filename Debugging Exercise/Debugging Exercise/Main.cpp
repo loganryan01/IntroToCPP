@@ -127,6 +127,7 @@ void startup()
 //--------------------------------------------------
 void groundBattle()
 {
+	// Move opening message to correct position.
 	cout << CSI << "1;0H";
 	cout << "A squad of Marines approaches a swarm of Zerglings and opens fire! The Zerglings charge!" << endl;
 	// Attack each other until only one team is left alive
@@ -151,6 +152,8 @@ void groundBattle()
 		cout << "The Zerg win but the war continues in the air." << endl;
 		cout << "Press 'Enter' to continue" << endl;
 		cin.get();
+
+		// Clear the messages.
 		cout << CSI << "2;0H";
 		cout << CSI << "0J";
 	}
@@ -161,6 +164,7 @@ void groundBattle()
 //----------------------------------------------------
 void airBattle()
 {
+	// Move opening message to correct position.
 	cout << CSI << "1;0H";
 	cout << "A fleet of Valkyries approaches a swarm of Mutalisks and opens fire! The Mutalisks charge!" << endl;
 	// Attack each other until only one team is left alive
@@ -245,6 +249,7 @@ void marineTurn()
 {
 	if (marineAlive()) // if there's at least one marine alive
 	{
+		// Move the output messages to the correct position. 
 		cout << CSI << "2;0H";
 		for (vector<Marine>::iterator i = squad.begin(); i != squad.end(); ++i) // go through the squad
 		{
@@ -264,6 +269,8 @@ void marineTurn()
 		}
 		cout << "Press 'Enter' to continue" << endl;
 		cin.get();
+
+		// Clear the messages.
 		cout << CSI << "2;0H";
 		cout << CSI << "0J";
 	}
@@ -276,6 +283,7 @@ void zerglingTurn()
 {
 	if (zerglingAlive()) // if there's at least one zergling alive
 	{
+		// Move the output messages to the correct position. 
 		cout << CSI << "2;0H";
 		for (vector<Zergling>::iterator i = swarm.begin(); i != swarm.end(); ++i) // loop through zerglings
 		{
@@ -295,6 +303,8 @@ void zerglingTurn()
 		}
 		cout << "Press 'Enter' to continue" << endl;
 		cin.get();
+
+		// Clear the messages.
 		cout << CSI << "2;0H";
 		cout << CSI << "0J";
 	}
@@ -307,6 +317,7 @@ void mutaliskTurn()
 {
 	if (mutaliskAlive()) // if there's at least one mutalisk alive
 	{
+		// Move the output messages to the correct position. 
 		cout << CSI << "2;0H";
 		for (vector<Mutalisk>::iterator i = airSwarm.begin(); i != airSwarm.end(); ++i) // loop through mutalisk
 		{
@@ -326,6 +337,8 @@ void mutaliskTurn()
 		}
 		cout << "Press 'Enter' to continue" << endl;
 		cin.get();
+
+		// Clear the messages.
 		cout << CSI << "2;0H";
 		cout << CSI << "0J";
 	}
@@ -338,6 +351,7 @@ void valkyrieTurn()
 {
 	if (valkyrieAlive()) // if there's at least one valkyrie alive
 	{
+		// Move the output messages to the correct position. 
 		cout << CSI << "2;0H";
 		for (vector<Valkyrie>::iterator i = fleet.begin(); i != fleet.end(); ++i) // go through the fleet
 		{
@@ -357,6 +371,8 @@ void valkyrieTurn()
 		}
 		cout << "Press 'Enter' to continue" << endl;
 		cin.get();
+
+		// Clear the messages.
 		cout << CSI << "2;0H";
 		cout << CSI << "0J";
 	}

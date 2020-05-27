@@ -12,8 +12,6 @@
 #include <Windows.h>
 #include <conio.h>
 
-using namespace std;
-
 //---------------------------------------------------------
 // Initialise the variables in the class.
 //	 m_gameOver (bool): Is the game over?
@@ -51,11 +49,11 @@ bool Game::isGameOver()
 void Game::drawWelcomeMessage()
 {
 	// Print title of game
-	cout << INDENT << INDENT << MAGENTA << "Welcome to Tic-Tac-Toe" << RESET_COLOR << endl;
+    std::cout << INDENT << INDENT << MAGENTA << "Welcome to Tic-Tac-Toe" << RESET_COLOR << endl;
 
 	// Print game description
-	cout << INDENT << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
-	cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
+    std::cout << INDENT << "Tic-Tac-Toe is a game for two players who take turns marking the spaces in a 3x3 grid." << endl;
+    std::cout << INDENT << "The player wins the game by placing 3 of their marks diagonally, vertically or horizontally." << endl << endl;
 }
 
 //------------------
@@ -82,16 +80,16 @@ void Game::drawGrid()
     Point2D position = { 0, 0 };
 
     // Print the column numbers.
-    cout << INDENT << "    1" << "    2" << "    3" << endl;
+    std::cout << INDENT << "    1" << "    2" << "    3" << endl;
 
     // Go through the rows
     for (position.y = 1; position.y < GRID_HEIGHT; position.y++)
     {
         // Move to the correct position.
-        cout << INDENT;
+        std::cout << INDENT;
 
         // Print the row number.
-        cout << position.y << " ";
+        std::cout << position.y << " ";
 
         // Go through the columns
         for (position.x = 1; position.x < GRID_WIDTH; position.x++)
@@ -99,7 +97,7 @@ void Game::drawGrid()
             // Draw what is meant to be in the squares based on their types.
             m_grid[position.y][position.x].draw();
         }
-        cout << endl;
+        std::cout << endl;
     }
 }
 
@@ -113,21 +111,21 @@ int Game::getCommand()
     int command;
 
     // Move the cursor to correct position.
-    cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+    std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
 
     // Display instructions.
-    cout << INDENT << "Insert the number row and column you want to place your token:";
+    std::cout << INDENT << "Insert the number row and column you want to place your token:";
 
     // Move the cursor to correct position.
-    cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H";
+    std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H";
 
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
 
     // Get command
-    cout << YELLOW;
+    std::cout << YELLOW;
     std::cin >> command;
-    cout << RESET_COLOR;
+    std::cout << RESET_COLOR;
 
     return command;
 }
@@ -174,7 +172,7 @@ void Game::executeCommand()
         // again.
         cout << INDENT << "Invalid Choice." << endl;
     }
-    cout << INDENT << "Press 'Enter' to continue.";
+    std::cout << INDENT << "Press 'Enter' to continue.";
     std::cin.clear();
     std::cin.ignore(std::cin.rdbuf()->in_avail());
     std::cin.get();
@@ -207,13 +205,13 @@ void Game::updateSquare(int row, int column)
         }
         // The grid will be updated with that decision.
         draw();
-        cout << CSI << 10 << ";" << 0 << "H";
-        cout << INDENT << "Good choice!" << endl;
+        std::cout << CSI << 10 << ";" << 0 << "H";
+        std::cout << INDENT << "Good choice!" << endl;
     }
     else
     {
         // Let the player know why they cannot place their token there.
-        cout << INDENT << "This square is already filled! Please choose another!" << endl;
+        std::cout << INDENT << "This square is already filled! Please choose another!" << endl;
     }
 }
 
@@ -223,22 +221,22 @@ void Game::updateSquare(int row, int column)
 void Game::playerTurn()
 {
     // Move the cursor to the correct position.
-    cout << CSI << 10 << ";" << 0 << "H";
+    std::cout << CSI << 10 << ";" << 0 << "H";
 
     // If it's player 1's turn.
     if (m_player1Turn)
     {
-        cout << INDENT << "It's 'O' turn!" << endl;
+        std::cout << INDENT << "It's 'O' turn!" << endl;
     }
     else if (m_player2Turn) // If it's player 2's turn.
     {
-        cout << INDENT << "It's 'X' turn!" << endl;
+        std::cout << INDENT << "It's 'X' turn!" << endl;
     }
     executeCommand();
 
     // Clear the input area.
-    cout << CSI << 9 << ";" << 0 << "H";
-    cout << CSI << "0J";
+    std::cout << CSI << 9 << ";" << 0 << "H";
+    std::cout << CSI << "0J";
 }
 
 //------------------------
@@ -259,10 +257,10 @@ void Game::player1Wins()
     {
         // If it is true, then the game is over and player 1 wins.
         m_gameOver = true;
-        cout << CSI << 10 << ";" << 0 << "H";
-        cout << CSI << "0J";
-        cout << INDENT << "'O' Wins!" << endl;
-        cout << INDENT << "Press 'Enter' to exit the program.";
+        std::cout << CSI << 10 << ";" << 0 << "H";
+        std::cout << CSI << "0J";
+        std::cout << INDENT << "'O' Wins!" << endl;
+        std::cout << INDENT << "Press 'Enter' to exit the program.";
         std::cin.clear();
         std::cin.ignore(std::cin.rdbuf()->in_avail());
         std::cin.get();
@@ -287,10 +285,10 @@ void Game::player2Wins()
     {
         // If it is true, then the game is over and player 2 wins
         m_gameOver = true;
-        cout << CSI << 10 << ";" << 0 << "H";
-        cout << CSI << "0J";
-        cout << INDENT << "'X' Wins!" << endl;
-        cout << INDENT << "Press 'Enter' to exit the program.";
+        std::cout << CSI << 10 << ";" << 0 << "H";
+        std::cout << CSI << "0J";
+        std::cout << INDENT << "'X' Wins!" << endl;
+        std::cout << INDENT << "Press 'Enter' to exit the program.";
         std::cin.clear();
         std::cin.ignore(std::cin.rdbuf()->in_avail());
         std::cin.get();
@@ -309,10 +307,10 @@ void Game::playersTie()
     {
         // If the grid is full the game is over and nobody wins.
         m_gameOver = true;
-        cout << CSI << 10 << ";" << 0 << "H";
-        cout << CSI << "0J";
-        cout << INDENT << "It is a draw." << endl;
-        cout << INDENT << "Press 'Enter' to exit the program.";
+        std::cout << CSI << 10 << ";" << 0 << "H";
+        std::cout << CSI << "0J";
+        std::cout << INDENT << "It is a draw." << endl;
+        std::cout << INDENT << "Press 'Enter' to exit the program.";
         std::cin.clear();
         std::cin.ignore(std::cin.rdbuf()->in_avail());
         std::cin.get();
