@@ -187,7 +187,7 @@ bool Game::startup()
 }
 
 //-------------------------------------------------
-// Check if the game is over
+// Check if the game is over.
 //   return (bool): Return the game is over or not.
 //-------------------------------------------------
 bool Game::isGameOver()
@@ -196,7 +196,7 @@ bool Game::isGameOver()
 }
 
 //-------------------------------------------------
-// Check if virtual terminal is set up
+// Check if virtual terminal is set up.
 //   return (bool): Return the game is over or not.
 //-------------------------------------------------
 bool Game::enableVirtualTerminal()
