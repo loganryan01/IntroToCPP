@@ -41,21 +41,31 @@ void Game::update()
 {
     char inputOldInitials[4];
     
+    // Show the player the possible commands.
     drawCommandList();
 
+    // get the choice form the player.
     int choice = getChoice();
 
+    // Hide the command list.
     hideCommandList();
 
     switch (choice)
     {
     case 1: // Add player info to table
-        // Check that there is a space in the table.
+        // Check that there is a space in the table first.
         if (availableRow())
         {
+            // Get the new initials.
             updateInitials();
+
+            // Save the initials to binary file.
             m_table[m_playerNumber][0].saveInitials(m_playerNumber, m_playerNumber);
+            
+            // Get the new initials.
             updateScore();
+
+            // Save the score to binary file.
             m_table[m_playerNumber][1].saveScore(m_playerNumber, m_playerNumber);
         }
         else
@@ -69,27 +79,38 @@ void Game::update()
         
         break;
     case 2: // Change player name
+        // Move to correct position.
         std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-        std::cout << CSI << "40X";
+
+        // Get the old initials from the player.
         std::cout << INDENT << "Input old initials: " << YELLOW;
         std::cin >> inputOldInitials;
         std::cout << RESET_COLOR;
+
+        // Check if the initials exist in the table.
         if (correctInitials(inputOldInitials))
         {
-            // Get the old initials position in the binary file
+            // Get the old initials position in the binary file.
             int binaryFilePosition = m_table[m_playerNumber][0].checkBinaryInitials(inputOldInitials);
-            // Get the new initials
+            
+            // Get the new initials.
             updateInitials();
-            // Place the new initials in the old initals position in the
-            // binary file
+            
+            // If the name does exist in the binary file.
             if (binaryFilePosition > -1)
             {
+                // Place the new initials in the old initals position in the
+                // binary file.
                 m_table[m_playerNumber][0].saveInitials(m_playerNumber, binaryFilePosition);
             }
             else
             {
+                // Tell the player that the name didn't save due to the
+                // name not existing in the binary file.
                 std::cout << INDENT << "Unable to save." << std::endl;
                 std::cout << INDENT << "Press 'Enter' to continue.";
+
+                // Return to the top of the loop and try again.
                 std::cin.clear();
                 std::cin.ignore(std::cin.rdbuf()->in_avail());
                 std::cin.get();
@@ -104,30 +125,41 @@ void Game::update()
             std::cin.get();
         }
         break;
-    case 3: // Change player score
+    case 3: // Change player score.
+        // Move cursor to the correct position.
         std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
-        std::cout << CSI << "40X";
+
+        // Get the old initials from the player.
         std::cout << INDENT << "Whose score do you want to change?" << std::endl;
         std::cout << INDENT << "Input old initials: " << YELLOW;
         std::cin >> inputOldInitials;
         std::cout << RESET_COLOR;
+
+        // Check if the initials exist in the table.
         if (correctInitials(inputOldInitials))
         {
             // Get the old score position in the binary file by getting
             // the old initials position.
             int binaryFilePosition = m_table[m_playerNumber][0].checkBinaryInitials(inputOldInitials);
-            // Get the new score
+            
+            // Get the new score.
             updateScore();
-            // Place the new score in the old score position in the
-            // binary file
+            
+            // If the name does exist in the binary file.
             if (binaryFilePosition > -1)
             {
+                // Place the new score in the old score position in the
+                // binary file.
                 m_table[m_playerNumber][1].saveScore(m_playerNumber, binaryFilePosition);
             }
             else
             {
+                // Tell the player that the score didn't save due to the
+                // name not existing in the binary file.
                 std::cout << INDENT << "Unable to save." << std::endl;
                 std::cout << INDENT << "Press 'Enter' to continue.";
+                
+                // Return to the top of the loop and try again.
                 std::cin.clear();
                 std::cin.ignore(std::cin.rdbuf()->in_avail());
                 std::cin.get();
@@ -135,26 +167,73 @@ void Game::update()
         }
         else
         {
+            // Tell the player that the name doesn't exist.
             std::cout << INDENT << "That name does not exist" << std::endl;
             std::cout << INDENT << "Press 'Enter' to continue.";
+            
+            // Return to the top of the loop and try again.
             std::cin.clear();
             std::cin.ignore(std::cin.rdbuf()->in_avail());
             std::cin.get();
         }
         break;
-    case 4: // Exit from database
+    case 4: // Search database
+        // Move the cursor to the correct position.
         std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+        
+        // Get the old initials from the player.
+        std::cout << INDENT << "Who are you looking for?" << std::endl;
+        std::cout << INDENT << "Input initials: " << YELLOW;
+        std::cin >> inputOldInitials;
+        std::cout << RESET_COLOR;
+
+        // Check if the name exists in the table.
+        if (correctInitials(inputOldInitials))
+        {
+            // Tell the player that the name does exist.
+            std::cout << INDENT << "That name exist" << std::endl;
+            std::cout << INDENT << "Press 'Enter' to continue.";
+            
+            // Return to the top of the loop and try again.
+            std::cin.clear();
+            std::cin.ignore(std::cin.rdbuf()->in_avail());
+            std::cin.get();
+        }
+        else
+        {
+            // Tell the player that the name doesn't exist.
+            std::cout << INDENT << "That name does not exist" << std::endl;
+            std::cout << INDENT << "Press 'Enter' to continue.";
+
+            // Return to the top of the loop and try again.
+            std::cin.clear();
+            std::cin.ignore(std::cin.rdbuf()->in_avail());
+            std::cin.get();
+        }
+        break;
+    case 5: // Exit from database
+        // Move cursor to the correct position.
+        std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+
+        // Display instructions to how to exit from the program.
         std::cout << std::endl << INDENT << "Press 'Enter' to exit the program.";
         std::cin.clear();
         std::cin.ignore(std::cin.rdbuf()->in_avail());
         std::cin.get();
+
+        // Move the exit message to the correct position.
         std::cout << CSI << PLAYER_INPUT_Y + 10 << ";" << 0 << "H";
         exit(0);
         break;
-    default:
+    default: // Incorrect number or an invalid position.
+        // Move cursor to the correct position.
         std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+
+        // Tell the player that there decision is invalid.
         std::cout << INDENT << "Invalid Choice" << std::endl;
         std::cout << INDENT << "Press 'Enter' to continue.";
+
+        // Return to the top of the loop and try again.
         std::cin.clear();
         std::cin.ignore(std::cin.rdbuf()->in_avail());
         std::cin.get();
@@ -352,7 +431,8 @@ void Game::drawCommandList()
     std::cout << INDENT << "1 = Add new player                     " << std::endl;
     std::cout << INDENT << "2 = Update player name                 " << std::endl;
     std::cout << INDENT << "3 = Update player score                " << std::endl;
-    std::cout << INDENT << "4 = Exit from database                 " << std::endl;
+    std::cout << INDENT << "4 = Search player                      " << std::endl;
+    std::cout << INDENT << "5 = Exit from database                 " << std::endl;
 }
 
 //-----------------------
